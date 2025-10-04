@@ -3,17 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Портфолио | GitHub Pages</title>
+    <title>Linemap | OSINT Specialist</title>
     <style>
         :root {
-            --primary: #6c63ff;
-            --primary-dark: #5651d9;
-            --secondary: #ff6584;
-            --dark-bg: #121212;
-            --dark-surface: #1e1e1e;
+            --dark-bg: #0f0f0f;
+            --dark-surface: #1a1a1a;
             --dark-card: #252525;
-            --text-primary: #ffffff;
+            --dark-border: #333333;
+            --text-primary: #f0f0f0;
             --text-secondary: #b0b0b0;
+            --accent: #6a0dad;
+            --accent-dark: #4b0082;
             --transition: all 0.3s ease;
         }
 
@@ -40,23 +40,32 @@
         header {
             padding: 2rem 0;
             text-align: center;
-            background: linear-gradient(135deg, var(--dark-surface) 0%, var(--dark-bg) 100%);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            background-color: var(--dark-surface);
+            border-bottom: 1px solid var(--dark-border);
+            position: relative;
         }
 
         .logo {
             font-size: 2.5rem;
             font-weight: 700;
             margin-bottom: 0.5rem;
-            background: linear-gradient(90deg, var(--primary), var(--secondary));
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
+            color: var(--text-primary);
         }
 
         .tagline {
             color: var(--text-secondary);
             font-size: 1.1rem;
+            margin-bottom: 1rem;
+        }
+
+        .nickname {
+            display: inline-block;
+            background-color: var(--accent);
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.9rem;
         }
 
         .tabs-container {
@@ -70,7 +79,7 @@
         .tab {
             padding: 12px 30px;
             background-color: var(--dark-card);
-            border: none;
+            border: 1px solid var(--dark-border);
             color: var(--text-secondary);
             font-size: 1rem;
             font-weight: 600;
@@ -83,13 +92,13 @@
 
         .tab:hover {
             color: var(--text-primary);
-            transform: translateY(-2px);
+            border-color: var(--accent);
         }
 
         .tab.active {
-            background-color: var(--primary);
+            background-color: var(--accent);
             color: white;
-            box-shadow: 0 4px 15px rgba(108, 99, 255, 0.3);
+            border-color: var(--accent);
         }
 
         .tab-content {
@@ -98,7 +107,7 @@
             background-color: var(--dark-surface);
             border-radius: 12px;
             margin-bottom: 2rem;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            border: 1px solid var(--dark-border);
             animation: fadeIn 0.5s ease;
         }
 
@@ -126,7 +135,7 @@
             left: 0;
             width: 50px;
             height: 3px;
-            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            background: var(--accent);
             border-radius: 3px;
         }
 
@@ -144,16 +153,16 @@
             padding: 2rem;
             text-align: center;
             transition: var(--transition);
-            border: 1px solid rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--dark-border);
         }
 
         .pricing-card:hover {
             transform: translateY(-5px);
-            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+            border-color: var(--accent);
         }
 
         .pricing-card.featured {
-            border: 2px solid var(--primary);
+            border: 2px solid var(--accent);
             position: relative;
         }
 
@@ -162,7 +171,7 @@
             top: -12px;
             left: 50%;
             transform: translateX(-50%);
-            background: var(--primary);
+            background: var(--accent);
             color: white;
             padding: 5px 15px;
             border-radius: 20px;
@@ -171,7 +180,7 @@
         }
 
         .price {
-            font-size: 3rem;
+            font-size: 2.5rem;
             font-weight: 700;
             margin: 1.5rem 0;
             color: var(--text-primary);
@@ -190,7 +199,7 @@
         .features li {
             padding: 8px 0;
             color: var(--text-secondary);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            border-bottom: 1px solid var(--dark-border);
         }
 
         .features li:last-child {
@@ -200,7 +209,7 @@
         .btn {
             display: inline-block;
             padding: 12px 30px;
-            background: linear-gradient(90deg, var(--primary), var(--primary-dark));
+            background: var(--accent);
             color: white;
             border: none;
             border-radius: 8px;
@@ -211,8 +220,8 @@
         }
 
         .btn:hover {
+            background: var(--accent-dark);
             transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(108, 99, 255, 0.4);
         }
 
         /* Bio Tab Styles */
@@ -226,13 +235,13 @@
         .profile-img {
             width: 100%;
             border-radius: 12px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            border: 1px solid var(--dark-border);
         }
 
         .bio-text h3 {
             font-size: 1.5rem;
             margin: 1.5rem 0 1rem;
-            color: var(--primary);
+            color: var(--accent);
         }
 
         .skills {
@@ -248,90 +257,81 @@
             border-radius: 20px;
             font-size: 0.9rem;
             color: var(--text-secondary);
+            border: 1px solid var(--dark-border);
+        }
+
+        .aliases {
+            margin-top: 1.5rem;
+            padding: 1rem;
+            background-color: var(--dark-card);
+            border-radius: 8px;
+            border-left: 4px solid var(--accent);
         }
 
         /* Project Tab Styles */
-        .projects-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 2rem;
-        }
-
         .project-card {
             background-color: var(--dark-card);
             border-radius: 12px;
-            overflow: hidden;
+            padding: 2rem;
+            margin-top: 2rem;
+            border: 1px solid var(--dark-border);
             transition: var(--transition);
         }
 
         .project-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
-        }
-
-        .project-img {
-            width: 100%;
-            height: 180px;
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 1.5rem;
-            font-weight: 700;
-        }
-
-        .project-content {
-            padding: 1.5rem;
+            border-color: var(--accent);
         }
 
         .project-title {
-            font-size: 1.3rem;
-            margin-bottom: 0.5rem;
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: var(--accent);
         }
 
         .project-description {
             color: var(--text-secondary);
-            margin-bottom: 1rem;
+            margin-bottom: 1.5rem;
         }
 
-        .project-tags {
-            display: flex;
-            flex-wrap: wrap;
+        .project-link {
+            display: inline-flex;
+            align-items: center;
             gap: 8px;
+            color: var(--accent);
+            text-decoration: none;
+            font-weight: 600;
+            transition: var(--transition);
         }
 
-        .project-tag {
-            background-color: rgba(108, 99, 255, 0.2);
-            color: var(--primary);
-            padding: 5px 10px;
-            border-radius: 5px;
-            font-size: 0.8rem;
+        .project-link:hover {
+            color: var(--text-primary);
         }
 
         footer {
             text-align: center;
             padding: 2rem 0;
             color: var(--text-secondary);
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            border-top: 1px solid var(--dark-border);
             margin-top: 2rem;
         }
 
-        .social-links {
-            display: flex;
-            justify-content: center;
-            gap: 1rem;
-            margin-top: 1rem;
+        .contact-info {
+            margin-top: 1.5rem;
         }
 
-        .social-link {
-            color: var(--text-secondary);
-            font-size: 1.2rem;
+        .telegram-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--accent);
+            text-decoration: none;
+            font-weight: 600;
+            margin-top: 1rem;
             transition: var(--transition);
         }
 
-        .social-link:hover {
-            color: var(--primary);
+        .telegram-link:hover {
+            color: var(--text-primary);
         }
 
         /* Responsive Design */
@@ -355,8 +355,9 @@
 <body>
     <header>
         <div class="container">
-            <div class="logo">DevPortfolio</div>
-            <p class="tagline">Современные решения для вашего бизнеса</p>
+            <div class="logo">Linemap</div>
+            <p class="tagline">OSINT Specialist | Digital Intelligence</p>
+            <div class="nickname">@Linemap</div>
         </div>
     </header>
 
@@ -368,48 +369,72 @@
         </div>
 
         <div id="price" class="tab-content active">
-            <h2>Наши тарифы</h2>
-            <p>Выберите подходящий план для вашего проекта</p>
+            <h2>Услуги и цены</h2>
+            <p>Специализированные OSINT услуги для ваших нужд</p>
             
             <div class="pricing-cards">
                 <div class="pricing-card">
-                    <h3>Базовый</h3>
-                    <div class="price">$299 <span>/ проект</span></div>
+                    <h3>Раскрытие личности</h3>
+                    <div class="price">$5+ <span>/ в зависимости от сложности</span></div>
                     <ul class="features">
-                        <li>Адаптивный дизайн</li>
-                        <li>До 5 страниц</li>
-                        <li>Базовая SEO оптимизация</li>
-                        <li>Техническая поддержка 1 месяц</li>
+                        <li>Идентификация личности по данным</li>
+                        <li>Анализ цифрового следа</li>
+                        <li>Подробности в DM</li>
                     </ul>
-                    <a href="#" class="btn">Выбрать план</a>
+                    <a href="https://t.me/lnmof" class="btn">Заказать</a>
                 </div>
                 
                 <div class="pricing-card featured">
-                    <div class="featured-badge">Популярный</div>
-                    <h3>Профессиональный</h3>
-                    <div class="price">$599 <span>/ проект</span></div>
+                    <div class="featured-badge">Популярно</div>
+                    <h3>Персональное обучение OSINT</h3>
+                    <div class="price">$17</div>
                     <ul class="features">
-                        <li>Индивидуальный дизайн</li>
-                        <li>До 15 страниц</li>
-                        <li>Полная SEO оптимизация</li>
-                        <li>Интеграция с CMS</li>
-                        <li>Техническая поддержка 3 месяца</li>
+                        <li>Индивидуальные занятия</li>
+                        <li>Практические методы</li>
+                        <li>Инструменты и ресурсы</li>
                     </ul>
-                    <a href="#" class="btn">Выбрать план</a>
+                    <a href="https://t.me/lnmof" class="btn">Заказать</a>
                 </div>
                 
                 <div class="pricing-card">
-                    <h3>Премиум</h3>
-                    <div class="price">$999 <span>/ проект</span></div>
+                    <h3>SW@T</h3>
+                    <div class="price">$15</div>
                     <ul class="features">
-                        <li>Эксклюзивный дизайн</li>
-                        <li>Неограниченное количество страниц</li>
-                        <li>Расширенная SEO оптимизация</li>
-                        <li>Интеграция с CRM</li>
-                        <li>Продвинутая аналитика</li>
-                        <li>Техническая поддержка 6 месяцев</li>
+                        <li>Специализированная услуга</li>
+                        <li>Детали по запросу</li>
                     </ul>
-                    <a href="#" class="btn">Выбрать план</a>
+                    <a href="https://t.me/lnmof" class="btn">Заказать</a>
+                </div>
+                
+                <div class="pricing-card">
+                    <h3>Защита (DEFF)</h3>
+                    <div class="price">$5 <span>/ месяц</span></div>
+                    <div class="price">$10 <span>/ полгода</span></div>
+                    <ul class="features">
+                        <li>Защита цифровой личности</li>
+                        <li>Консультации по безопасности</li>
+                    </ul>
+                    <a href="https://t.me/lnmof" class="btn">Заказать</a>
+                </div>
+                
+                <div class="pricing-card">
+                    <h3>Обучение анонимности</h3>
+                    <div class="price">$8</div>
+                    <ul class="features">
+                        <li>Методы сохранения анонимности</li>
+                        <li>Инструменты приватности</li>
+                    </ul>
+                    <a href="https://t.me/lnmof" class="btn">Заказать</a>
+                </div>
+                
+                <div class="pricing-card">
+                    <h3>Заказ на дом</h3>
+                    <div class="price">$6-11</div>
+                    <ul class="features">
+                        <li>Специфические запросы</li>
+                        <li>Детали обговариваются</li>
+                    </ul>
+                    <a href="https://t.me/lnmof" class="btn">Заказать</a>
                 </div>
             </div>
         </div>
@@ -419,88 +444,70 @@
             
             <div class="bio-content">
                 <div class="profile">
-                    <div class="profile-img" style="height: 300px; background: linear-gradient(135deg, #6c63ff, #ff6584); display: flex; align-items: center; justify-content: center; color: white; font-size: 5rem;">
-                        <i class="fas fa-user"></i>
+                    <div class="profile-img" style="height: 300px; background: linear-gradient(135deg, #333, #555); display: flex; align-items: center; justify-content: center; color: white; font-size: 5rem;">
+                        <i class="fas fa-user-secret"></i>
                     </div>
                 </div>
                 
                 <div class="bio-text">
-                    <h3>Привет, я Алексей - веб-разработчик</h3>
-                    <p>Специализируюсь на создании современных, адаптивных веб-сайтов и приложений. Имею более 5 лет опыта работы с различными технологиями и фреймворками.</p>
+                    <h3>OSINT Специалист</h3>
+                    <p>Специализируюсь на разведке открытых источников (OSINT) с фокусом на цифровую разведку и анализ данных.</p>
+                    
+                    <div class="aliases">
+                        <h4>Известные алиасы:</h4>
+                        <p>SHOOTER • Linemap</p>
+                    </div>
                     
                     <h3>Навыки</h3>
                     <div class="skills">
-                        <span class="skill">HTML/CSS</span>
-                        <span class="skill">JavaScript</span>
-                        <span class="skill">React</span>
-                        <span class="skill">Vue.js</span>
-                        <span class="skill">Node.js</span>
-                        <span class="skill">Git</span>
-                        <span class="skill">UI/UX Design</span>
-                        <span class="skill">Responsive Design</span>
+                        <span class="skill">OSINT</span>
+                        <span class="skill">HUMINT</span>
+                        <span class="skill">GEOINT</span>
+                        <span class="skill">SOCMINT</span>
+                        <span class="skill">IMINT</span>
+                        <span class="skill">Digital Forensics</span>
+                        <span class="skill">Data Analysis</span>
                     </div>
                     
                     <h3>Опыт работы</h3>
-                    <p>Работал над проектами для компаний различного масштаба - от стартапов до крупных корпораций. Участвовал в разработке более 50 успешных веб-проектов.</p>
+                    <p>Более 2 лет активной работы в Telegram-сообществе OSINT специалистов. Участвовал в различных проектах и исследованиях, связанных с цифровой разведкой и анализом открытых данных.</p>
                 </div>
             </div>
         </div>
 
         <div id="project" class="tab-content">
-            <h2>Мои проекты</h2>
-            <p>Примеры моих последних работ</p>
+            <h2>Проекты</h2>
+            <p>Мои текущие и завершенные проекты</p>
             
-            <div class="projects-grid">
-                <div class="project-card">
-                    <div class="project-img">E-Commerce</div>
-                    <div class="project-content">
-                        <h3 class="project-title">Интернет-магазин</h3>
-                        <p class="project-description">Полнофункциональный интернет-магазин с системой управления заказами и интеграцией платежных систем.</p>
-                        <div class="project-tags">
-                            <span class="project-tag">React</span>
-                            <span class="project-tag">Node.js</span>
-                            <span class="project-tag">MongoDB</span>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="project-card">
-                    <div class="project-img">CRM System</div>
-                    <div class="project-content">
-                        <h3 class="project-title">CRM система</h3>
-                        <p class="project-description">Система управления взаимоотношениями с клиентами с аналитикой и автоматизацией процессов.</p>
-                        <div class="project-tags">
-                            <span class="project-tag">Vue.js</span>
-                            <span class="project-tag">Firebase</span>
-                            <span class="project-tag">Charts.js</span>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="project-card">
-                    <div class="project-img">Portfolio</div>
-                    <div class="project-content">
-                        <h3 class="project-title">Портфолио художника</h3>
-                        <p class="project-description">Элегантный сайт-портфолио для художника с галереей работ и системой заказа.</p>
-                        <div class="project-tags">
-                            <span class="project-tag">HTML/CSS</span>
-                            <span class="project-tag">JavaScript</span>
-                            <span class="project-tag">PHP</span>
-                        </div>
-                    </div>
-                </div>
+            <div class="project-card">
+                <h3 class="project-title">Колесо Фортуны</h3>
+                <p class="project-description">
+                    Проект, который выбирает судьбу для провинившихся и предоставляет человеческую защиту от интернет-мусора. 
+                    Инновационный подход к модерации и защите онлайн-сообществ.
+                </p>
+                <a href="https://t.me/FortunessWheel" class="project-link" target="_blank">
+                    Перейти к проекту →
+                </a>
+            </div>
+            
+            <div class="project-card">
+                <h3 class="project-title">OSINT База знаний</h3>
+                <p class="project-description">
+                    Собираю и систематизирую информацию по методам и инструментам OSINT. 
+                    Постоянно обновляемая база знаний для сообщества.
+                </p>
             </div>
         </div>
     </div>
 
     <footer>
         <div class="container">
-            <p>© 2023 DevPortfolio. Все права защищены.</p>
-            <div class="social-links">
-                <a href="#" class="social-link">GitHub</a>
-                <a href="#" class="social-link">LinkedIn</a>
-                <a href="#" class="social-link">Telegram</a>
-                <a href="#" class="social-link">Email</a>
+            <p>© 2023 Linemap | OSINT Specialist</p>
+            <div class="contact-info">
+                <p>Связь исключительно через Telegram:</p>
+                <a href="https://t.me/lnmof" class="telegram-link" target="_blank">
+                    @lnmof
+                </a>
             </div>
         </div>
     </footer>
