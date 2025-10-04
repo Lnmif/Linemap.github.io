@@ -1,10 +1,530 @@
 <!DOCTYPE html>
-<html>
+<html lang="ru">
 <head>
-    <title>Мой сайт на GitHub</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Портфолио | GitHub Pages</title>
+    <style>
+        :root {
+            --primary: #6c63ff;
+            --primary-dark: #5651d9;
+            --secondary: #ff6584;
+            --dark-bg: #121212;
+            --dark-surface: #1e1e1e;
+            --dark-card: #252525;
+            --text-primary: #ffffff;
+            --text-secondary: #b0b0b0;
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--dark-bg);
+            color: var(--text-primary);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        header {
+            padding: 2rem 0;
+            text-align: center;
+            background: linear-gradient(135deg, var(--dark-surface) 0%, var(--dark-bg) 100%);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .logo {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .tagline {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+        }
+
+        .tabs-container {
+            display: flex;
+            justify-content: center;
+            margin: 2rem 0;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .tab {
+            padding: 12px 30px;
+            background-color: var(--dark-card);
+            border: none;
+            color: var(--text-secondary);
+            font-size: 1rem;
+            font-weight: 600;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .tab:hover {
+            color: var(--text-primary);
+            transform: translateY(-2px);
+        }
+
+        .tab.active {
+            background-color: var(--primary);
+            color: white;
+            box-shadow: 0 4px 15px rgba(108, 99, 255, 0.3);
+        }
+
+        .tab-content {
+            display: none;
+            padding: 2rem;
+            background-color: var(--dark-surface);
+            border-radius: 12px;
+            margin-bottom: 2rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            animation: fadeIn 0.5s ease;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        h2 {
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+            color: var(--text-primary);
+            position: relative;
+            display: inline-block;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            left: 0;
+            width: 50px;
+            height: 3px;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            border-radius: 3px;
+        }
+
+        /* Price Tab Styles */
+        .pricing-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .pricing-card {
+            background-color: var(--dark-card);
+            border-radius: 12px;
+            padding: 2rem;
+            text-align: center;
+            transition: var(--transition);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .pricing-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .pricing-card.featured {
+            border: 2px solid var(--primary);
+            position: relative;
+        }
+
+        .featured-badge {
+            position: absolute;
+            top: -12px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--primary);
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .price {
+            font-size: 3rem;
+            font-weight: 700;
+            margin: 1.5rem 0;
+            color: var(--text-primary);
+        }
+
+        .price span {
+            font-size: 1rem;
+            color: var(--text-secondary);
+        }
+
+        .features {
+            list-style: none;
+            margin: 1.5rem 0;
+        }
+
+        .features li {
+            padding: 8px 0;
+            color: var(--text-secondary);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .features li:last-child {
+            border-bottom: none;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 12px 30px;
+            background: linear-gradient(90deg, var(--primary), var(--primary-dark));
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            text-decoration: none;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(108, 99, 255, 0.4);
+        }
+
+        /* Bio Tab Styles */
+        .bio-content {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 3rem;
+            align-items: center;
+        }
+
+        .profile-img {
+            width: 100%;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .bio-text h3 {
+            font-size: 1.5rem;
+            margin: 1.5rem 0 1rem;
+            color: var(--primary);
+        }
+
+        .skills {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 1.5rem;
+        }
+
+        .skill {
+            background-color: var(--dark-card);
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        /* Project Tab Styles */
+        .projects-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .project-card {
+            background-color: var(--dark-card);
+            border-radius: 12px;
+            overflow: hidden;
+            transition: var(--transition);
+        }
+
+        .project-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .project-img {
+            width: 100%;
+            height: 180px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        .project-content {
+            padding: 1.5rem;
+        }
+
+        .project-title {
+            font-size: 1.3rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .project-description {
+            color: var(--text-secondary);
+            margin-bottom: 1rem;
+        }
+
+        .project-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .project-tag {
+            background-color: rgba(108, 99, 255, 0.2);
+            color: var(--primary);
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-size: 0.8rem;
+        }
+
+        footer {
+            text-align: center;
+            padding: 2rem 0;
+            color: var(--text-secondary);
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            margin-top: 2rem;
+        }
+
+        .social-links {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .social-link {
+            color: var(--text-secondary);
+            font-size: 1.2rem;
+            transition: var(--transition);
+        }
+
+        .social-link:hover {
+            color: var(--primary);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .bio-content {
+                grid-template-columns: 1fr;
+            }
+            
+            .tabs-container {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .tab {
+                width: 100%;
+                max-width: 300px;
+            }
+        }
+    </style>
 </head>
 <body>
-    <h1>Привет, мир!</h1>
-    <p>Это мой первый сайт на GitHub Pages!</p>
+    <header>
+        <div class="container">
+            <div class="logo">DevPortfolio</div>
+            <p class="tagline">Современные решения для вашего бизнеса</p>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="tabs-container">
+            <button class="tab active" data-tab="price">Price</button>
+            <button class="tab" data-tab="bio">BIO</button>
+            <button class="tab" data-tab="project">Project</button>
+        </div>
+
+        <div id="price" class="tab-content active">
+            <h2>Наши тарифы</h2>
+            <p>Выберите подходящий план для вашего проекта</p>
+            
+            <div class="pricing-cards">
+                <div class="pricing-card">
+                    <h3>Базовый</h3>
+                    <div class="price">$299 <span>/ проект</span></div>
+                    <ul class="features">
+                        <li>Адаптивный дизайн</li>
+                        <li>До 5 страниц</li>
+                        <li>Базовая SEO оптимизация</li>
+                        <li>Техническая поддержка 1 месяц</li>
+                    </ul>
+                    <a href="#" class="btn">Выбрать план</a>
+                </div>
+                
+                <div class="pricing-card featured">
+                    <div class="featured-badge">Популярный</div>
+                    <h3>Профессиональный</h3>
+                    <div class="price">$599 <span>/ проект</span></div>
+                    <ul class="features">
+                        <li>Индивидуальный дизайн</li>
+                        <li>До 15 страниц</li>
+                        <li>Полная SEO оптимизация</li>
+                        <li>Интеграция с CMS</li>
+                        <li>Техническая поддержка 3 месяца</li>
+                    </ul>
+                    <a href="#" class="btn">Выбрать план</a>
+                </div>
+                
+                <div class="pricing-card">
+                    <h3>Премиум</h3>
+                    <div class="price">$999 <span>/ проект</span></div>
+                    <ul class="features">
+                        <li>Эксклюзивный дизайн</li>
+                        <li>Неограниченное количество страниц</li>
+                        <li>Расширенная SEO оптимизация</li>
+                        <li>Интеграция с CRM</li>
+                        <li>Продвинутая аналитика</li>
+                        <li>Техническая поддержка 6 месяцев</li>
+                    </ul>
+                    <a href="#" class="btn">Выбрать план</a>
+                </div>
+            </div>
+        </div>
+
+        <div id="bio" class="tab-content">
+            <h2>Обо мне</h2>
+            
+            <div class="bio-content">
+                <div class="profile">
+                    <div class="profile-img" style="height: 300px; background: linear-gradient(135deg, #6c63ff, #ff6584); display: flex; align-items: center; justify-content: center; color: white; font-size: 5rem;">
+                        <i class="fas fa-user"></i>
+                    </div>
+                </div>
+                
+                <div class="bio-text">
+                    <h3>Привет, я Алексей - веб-разработчик</h3>
+                    <p>Специализируюсь на создании современных, адаптивных веб-сайтов и приложений. Имею более 5 лет опыта работы с различными технологиями и фреймворками.</p>
+                    
+                    <h3>Навыки</h3>
+                    <div class="skills">
+                        <span class="skill">HTML/CSS</span>
+                        <span class="skill">JavaScript</span>
+                        <span class="skill">React</span>
+                        <span class="skill">Vue.js</span>
+                        <span class="skill">Node.js</span>
+                        <span class="skill">Git</span>
+                        <span class="skill">UI/UX Design</span>
+                        <span class="skill">Responsive Design</span>
+                    </div>
+                    
+                    <h3>Опыт работы</h3>
+                    <p>Работал над проектами для компаний различного масштаба - от стартапов до крупных корпораций. Участвовал в разработке более 50 успешных веб-проектов.</p>
+                </div>
+            </div>
+        </div>
+
+        <div id="project" class="tab-content">
+            <h2>Мои проекты</h2>
+            <p>Примеры моих последних работ</p>
+            
+            <div class="projects-grid">
+                <div class="project-card">
+                    <div class="project-img">E-Commerce</div>
+                    <div class="project-content">
+                        <h3 class="project-title">Интернет-магазин</h3>
+                        <p class="project-description">Полнофункциональный интернет-магазин с системой управления заказами и интеграцией платежных систем.</p>
+                        <div class="project-tags">
+                            <span class="project-tag">React</span>
+                            <span class="project-tag">Node.js</span>
+                            <span class="project-tag">MongoDB</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="project-card">
+                    <div class="project-img">CRM System</div>
+                    <div class="project-content">
+                        <h3 class="project-title">CRM система</h3>
+                        <p class="project-description">Система управления взаимоотношениями с клиентами с аналитикой и автоматизацией процессов.</p>
+                        <div class="project-tags">
+                            <span class="project-tag">Vue.js</span>
+                            <span class="project-tag">Firebase</span>
+                            <span class="project-tag">Charts.js</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="project-card">
+                    <div class="project-img">Portfolio</div>
+                    <div class="project-content">
+                        <h3 class="project-title">Портфолио художника</h3>
+                        <p class="project-description">Элегантный сайт-портфолио для художника с галереей работ и системой заказа.</p>
+                        <div class="project-tags">
+                            <span class="project-tag">HTML/CSS</span>
+                            <span class="project-tag">JavaScript</span>
+                            <span class="project-tag">PHP</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <div class="container">
+            <p>© 2023 DevPortfolio. Все права защищены.</p>
+            <div class="social-links">
+                <a href="#" class="social-link">GitHub</a>
+                <a href="#" class="social-link">LinkedIn</a>
+                <a href="#" class="social-link">Telegram</a>
+                <a href="#" class="social-link">Email</a>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const tabs = document.querySelectorAll('.tab');
+            const tabContents = document.querySelectorAll('.tab-content');
+            
+            tabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    // Убираем активный класс у всех вкладок и контента
+                    tabs.forEach(t => t.classList.remove('active'));
+                    tabContents.forEach(content => content.classList.remove('active'));
+                    
+                    // Добавляем активный класс текущей вкладке
+                    tab.classList.add('active');
+                    
+                    // Показываем соответствующий контент
+                    const tabId = tab.getAttribute('data-tab');
+                    document.getElementById(tabId).classList.add('active');
+                });
+            });
+        });
+    </script>
 </body>
 </html>
