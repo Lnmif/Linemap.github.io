@@ -4,147 +4,182 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Anonymous Kids — OSINT и цифровая грамотность</title>
-  <meta name="description" content="Anonymous Kids — образовательный проект по OSINT, цифровой безопасности и помощи людям. Этика и закон прежде всего." />
   <style>
-    :root{
-      --bg:#0f1724;
-      --muted:#9aa7bf;
-      --accent:#0ea5a4;
-      font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+    :root {
+      --bg: #f7f8fa;
+      --card: #ffffff;
+      --text: #222;
+      --muted: #6b7280;
+      --accent: #9ca3af;
+      --radius: 14px;
+      font-family: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
     }
 
-    body{
-      margin:0;
-      background: linear-gradient(180deg,#071023 0%, #07162b 100%);
-      color:#e6eef8;
-      overflow-x:hidden;
-      overflow-y:auto;
-      -webkit-font-smoothing:antialiased;
-      -moz-osx-font-smoothing:grayscale;
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
     }
 
-    /* === АНИМАЦИЯ МАСКИ === */
-    .mask-overlay{
-      position:fixed;
-      top:0;
-      left:0;
-      width:100%;
-      height:100%;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      background:linear-gradient(180deg,#071023 0%, #07162b 100%);
-      z-index:999;
-      opacity:1;
-      transition:opacity 1s ease;
+    /* === ЗАГРУЗОЧНАЯ АНИМАЦИЯ === */
+    .mask-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: var(--bg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 999;
+      transition: opacity 1s ease;
     }
 
-    .mask-overlay img{
-      width:180px;
-      height:180px;
-      object-fit:contain;
-      transform:translateY(-200%);
-      animation:slideDown 1.8s ease forwards;
+    .mask-overlay img {
+      width: 160px;
+      height: auto;
+      transform: translateY(-200%);
+      opacity: 0;
+      animation: slideDown 1.8s ease forwards;
     }
 
-    @keyframes slideDown{
-      0%{transform:translateY(-200%); opacity:0;}
-      60%{transform:translateY(15%); opacity:1;}
-      100%{transform:translateY(0); opacity:1;}
+    @keyframes slideDown {
+      0% { transform: translateY(-200%); opacity: 0; }
+      60% { transform: translateY(10%); opacity: 1; }
+      100% { transform: translateY(0); opacity: 1; }
     }
 
-    /* === Основной контент === */
-    .content{
-      opacity:0;
-      transition:opacity 1s ease;
+    /* === ОСНОВНОЙ КОНТЕНТ === */
+    .content {
+      opacity: 0;
+      transition: opacity 1s ease, transform 1s ease;
+      transform: translateY(15px);
     }
-    .content.visible{
-      opacity:1;
-    }
-
-    .container{
-      max-width:980px;
-      margin:0 auto;
-      padding:24px;
+    .content.visible {
+      opacity: 1;
+      transform: translateY(0);
     }
 
-    header{
-      display:flex;
-      gap:16px;
-      align-items:center;
-      margin-bottom:20px;
+    .container {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 24px;
     }
 
-    .logo img{width:80px;height:80px;border-radius:12px;}
-
-    h1{font-size:28px;margin:0}
-    p.lead{margin:6px 0 0;color:var(--muted)}
-    nav{margin-top:18px;display:flex;gap:10px;flex-wrap:wrap;}
-    a.btn{
-      background:transparent;
-      border:1px solid rgba(255,255,255,0.05);
-      padding:8px 12px;
-      border-radius:10px;
-      color:var(--muted);
-      text-decoration:none;
-      font-size:14px;
+    header {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 20px;
     }
 
-    main{margin-top:22px;display:grid;grid-template-columns:1fr 320px;gap:20px;align-items:start;}
-    .card{
-      background:rgba(255,255,255,0.03);
-      border-radius:14px;
-      padding:18px;
-      box-shadow:0 8px 30px rgba(2,6,23,0.6);
-      border:1px solid rgba(255,255,255,0.03);
+    .logo img {
+      width: 72px;
+      height: 72px;
+      object-fit: contain;
     }
-    h2{margin-top:0}
-    ul{margin:8px 0 0 18px;color:var(--muted)}
-    .aside .card{position:sticky;top:24px}
-    footer{margin-top:28px;color:var(--muted);font-size:13px;text-align:center}
-    .cta{
-      display:inline-block;
-      margin-top:12px;
-      background:linear-gradient(90deg,var(--accent), #6ee7b7 120%);
-      color:#042024;
-      padding:10px 14px;
-      border-radius:12px;
-      text-decoration:none;
-      font-weight:600;
+
+    h1 {
+      font-size: 28px;
+      margin: 0;
+      font-weight: 700;
     }
-    @media (max-width:880px){
-      main{grid-template-columns:1fr; padding-bottom:60px}
+
+    p.lead {
+      margin: 6px 0 0;
+      color: var(--muted);
     }
-    code{
-      background:rgba(255,255,255,0.03);
-      padding:2px 6px;
-      border-radius:6px;
-      font-family:monospace;
-      font-size:13px;
-      color:#bfe8e7;
+
+    nav {
+      margin-top: 18px;
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    a.btn {
+      background: #f0f0f0;
+      padding: 8px 12px;
+      border-radius: 10px;
+      color: var(--text);
+      text-decoration: none;
+      font-size: 14px;
+      border: 1px solid #e5e7eb;
+      transition: background 0.3s;
+    }
+
+    a.btn:hover {
+      background: #e5e7eb;
+    }
+
+    main {
+      display: grid;
+      grid-template-columns: 1fr 300px;
+      gap: 20px;
+      align-items: start;
+      margin-top: 22px;
+    }
+
+    .card {
+      background: var(--card);
+      border-radius: var(--radius);
+      padding: 18px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+      border: 1px solid #e5e7eb;
+    }
+
+    h2 {
+      margin-top: 0;
+      font-size: 20px;
+    }
+
+    ul {
+      margin: 8px 0 0 18px;
+      color: var(--muted);
+    }
+
+    footer {
+      text-align: center;
+      margin-top: 40px;
+      color: var(--muted);
+      font-size: 14px;
+      border-top: 1px solid #e5e7eb;
+      padding-top: 16px;
+    }
+
+    @media (max-width: 880px) {
+      main { grid-template-columns: 1fr; }
+      .logo img { width: 60px; height: 60px; }
     }
   </style>
 </head>
+
 <body>
 
-  <!-- Анимация загрузки -->
+  <!-- Маска при загрузке -->
   <div class="mask-overlay" id="mask">
-    <img src="assets/mask.png" alt="Mask logo">
+    <img src="mask.png" alt="Mask logo">
   </div>
 
-  <!-- Основной контент -->
+  <!-- Контент -->
   <div class="content" id="content">
     <div class="container">
       <header>
-        <div class="logo"><img src="assets/mask.png" alt="Логотип"></div>
+        <div class="logo">
+          <img src="mask.png" alt="Логотип">
+        </div>
         <div>
           <h1>Anonymous Kids</h1>
-          <p class="lead">Образовательный проект по OSINT, цифровой безопасности и помощи людям. Этика и закон — наш приоритет.</p>
+          <p class="lead">Образовательный проект по OSINT, цифровой безопасности и помощи людям. Без политики, только польза и знания.</p>
           <nav>
             <a class="btn" href="#about">О проекте</a>
             <a class="btn" href="#tools">Инструменты</a>
             <a class="btn" href="#ethics">Этика</a>
-            <a class="btn" href="#resources">Ресурсы</a>
+            <a class="btn" href="#contact">Контакты</a>
           </nav>
         </div>
       </header>
@@ -153,62 +188,59 @@
         <section>
           <article class="card" id="about">
             <h2>О проекте</h2>
-            <p>Anonymous Kids — это некоммерческая инициатива по обучению безопасным методам OSINT, защите персональных данных и цифровой грамотности.</p>
+            <p>Anonymous Kids — некоммерческая инициатива, обучающая открытым источникам (OSINT) и цифровой грамотности. Мы показываем, как работать с информацией законно и безопасно.</p>
           </article>
 
-          <article class="card" id="tools" style="margin-top:16px">
-            <h2>Инструменты и подходы</h2>
+          <article class="card" id="tools" style="margin-top:16px;">
+            <h2>Инструменты</h2>
             <ul>
-              <li>Поиск открытых источников (легально).</li>
+              <li>Поиск данных в открытых источниках.</li>
               <li>Проверка достоверности информации.</li>
-              <li>Цифровая безопасность и защита аккаунтов.</li>
+              <li>Анализ изображений и метаданных.</li>
             </ul>
           </article>
 
-          <article class="card" id="ethics" style="margin-top:16px">
+          <article class="card" id="ethics" style="margin-top:16px;">
             <h2>Этика и закон</h2>
             <ul>
-              <li>Работа только в рамках закона.</li>
-              <li>Уважение к частной жизни людей.</li>
+              <li>Работа строго в рамках законодательства.</li>
+              <li>Уважение приватности и прав личности.</li>
               <li>Использование знаний во благо.</li>
             </ul>
           </article>
         </section>
 
-        <aside class="aside">
+        <aside>
           <div class="card">
-            <h3>Ресурсы</h3>
-            <ul>
-              <li><a href="#">Учебник по OSINT</a></li>
-              <li><a href="#">Защита персональных данных</a></li>
-            </ul>
+            <h3 id="contact">Контакты</h3>
+            <p>GitHub: <a href="#" style="color:inherit;">github.com/anonymous-kids</a></p>
+            <p>Email: <code>contact@anonymouskids.example</code></p>
           </div>
         </aside>
       </main>
 
       <footer>
-        <p>© <span id="yr"></span> Anonymous Kids — образовательный проект по OSINT.</p>
+        <p>© <span id="yr"></span> Anonymous Kids — образовательный проект OSINT. Все права защищены.</p>
       </footer>
     </div>
   </div>
 
   <script>
-    // Показ контента после анимации маски
+    // Плавное появление контента после загрузки маски
     window.addEventListener("load", () => {
       const mask = document.getElementById("mask");
       const content = document.getElementById("content");
-
       setTimeout(() => {
         mask.style.opacity = "0";
         setTimeout(() => {
           mask.style.display = "none";
           content.classList.add("visible");
         }, 1000);
-      }, 1800); // время анимации маски
+      }, 1800);
     });
-
     document.getElementById("yr").textContent = new Date().getFullYear();
   </script>
 
 </body>
 </html>
+
