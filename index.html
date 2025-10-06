@@ -15,10 +15,24 @@
         
         body {
             font-family: 'Inter', sans-serif;
-            background: linear-gradient(135deg, #1E3B5A, #2C5282, #2A4365);
+            background: linear-gradient(135deg, 
+                #0f2b46 0%,
+                #1a3a5f 25%,
+                #2d5a8c 50%,
+                #4a7fb8 75%,
+                #6ba8d6 100%);
             min-height: 100vh;
             overflow-x: hidden;
             position: relative;
+            background-size: 400% 400%;
+            animation: aurora 15s ease infinite;
+            filter: blur(0.3px);
+        }
+        
+        @keyframes aurora {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
         }
         
         /* Анимированные снежинки */
@@ -34,32 +48,33 @@
         
         .snowflake {
             position: absolute;
-            color: #E6F7FF;
-            font-size: 20px;
-            opacity: 0.8;
-            animation: float 15s infinite linear;
+            color: rgba(200, 230, 255, 0.7);
+            font-size: 18px;
+            opacity: 0.6;
+            animation: float 20s infinite linear;
+            text-shadow: 0 0 10px rgba(100, 200, 255, 0.5);
         }
         
         @keyframes float {
             0% {
                 transform: translate(0, 0) rotate(0deg);
-                opacity: 0.8;
-            }
-            25% {
-                transform: translate(20px, 50px) rotate(90deg);
                 opacity: 0.6;
             }
+            25% {
+                transform: translate(15px, 40px) rotate(90deg);
+                opacity: 0.4;
+            }
             50% {
-                transform: translate(-15px, 100px) rotate(180deg);
-                opacity: 0.8;
+                transform: translate(-10px, 80px) rotate(180deg);
+                opacity: 0.6;
             }
             75% {
-                transform: translate(25px, 150px) rotate(270deg);
-                opacity: 0.5;
+                transform: translate(20px, 120px) rotate(270deg);
+                opacity: 0.3;
             }
             100% {
-                transform: translate(0, 200px) rotate(360deg);
-                opacity: 0.8;
+                transform: translate(0, 160px) rotate(360deg);
+                opacity: 0.6;
             }
         }
         
@@ -82,12 +97,12 @@
             font-size: 4.5rem;
             font-weight: 700;
             color: white;
-            text-shadow: 0 4px 20px rgba(0, 100, 200, 0.5);
+            text-shadow: 0 4px 20px rgba(100, 200, 255, 0.6);
             margin-bottom: 3rem;
             transform: translateY(-100px);
             opacity: 0;
             animation: slideDown 1s ease-out 0.5s forwards;
-            background: linear-gradient(135deg, #63B3ED, #90CDF4, #BEE3F8);
+            background: linear-gradient(135deg, #a8d8ff, #c2e6ff, #ddf2ff);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
@@ -110,17 +125,18 @@
         }
         
         .card {
-            background: rgba(255, 255, 255, 0.12);
-            backdrop-filter: blur(25px);
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(20px);
             border-radius: 20px;
             padding: 2rem;
-            box-shadow: 0 8px 32px rgba(0, 100, 200, 0.3);
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 8px 32px rgba(100, 180, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.15);
             transform: translateY(-100px) scale(0.9);
             opacity: 0;
             transition: all 0.4s ease;
             position: relative;
             overflow: hidden;
+            cursor: pointer;
         }
         
         .card::before {
@@ -140,8 +156,9 @@
         
         .card:hover {
             transform: translateY(-5px) scale(1.02);
-            box-shadow: 0 15px 40px rgba(0, 100, 200, 0.4);
-            background: rgba(255, 255, 255, 0.15);
+            box-shadow: 0 15px 40px rgba(100, 200, 255, 0.3);
+            background: rgba(255, 255, 255, 0.12);
+            border: 1px solid rgba(255, 255, 255, 0.25);
         }
         
         .card-1 {
@@ -174,34 +191,50 @@
         .card-title {
             font-size: 1.5rem;
             font-weight: 600;
-            color: #BEE3F8;
+            color: #d4edff;
             margin-bottom: 0.5rem;
             display: flex;
             align-items: center;
             gap: 0.5rem;
+            transition: color 0.3s ease;
+        }
+        
+        .card:hover .card-title {
+            color: #ffffff;
         }
         
         .card-title::before {
             content: "";
             width: 8px;
             height: 8px;
-            background: #63B3ED;
+            background: #a8d8ff;
             border-radius: 50%;
             display: inline-block;
+            transition: background 0.3s ease;
+        }
+        
+        .card:hover .card-title::before {
+            background: #ffffff;
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
         }
         
         .card-text {
-            color: #E2E8F0;
+            color: #c2e6ff;
             line-height: 1.6;
             font-size: 1.1rem;
+            transition: color 0.3s ease;
+        }
+        
+        .card:hover .card-text {
+            color: #e6f7ff;
         }
         
         .card:nth-child(2) .card-title::before {
-            background: #90CDF4;
+            background: #b8e1ff;
         }
         
         .card:nth-child(3) .card-title::before {
-            background: #BEE3F8;
+            background: #c8ebff;
         }
         
         /* Адаптивность */
@@ -223,29 +256,30 @@
         /* Дополнительные декоративные элементы */
         .glow {
             position: fixed;
-            width: 300px;
-            height: 300px;
-            background: radial-gradient(circle, rgba(59, 130, 246, 0.3) 0%, transparent 70%);
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, rgba(100, 180, 255, 0.2) 0%, transparent 70%);
             border-radius: 50%;
-            filter: blur(60px);
+            filter: blur(80px);
             z-index: 1;
         }
         
         .glow-1 {
             top: 10%;
             left: 10%;
-            animation: glowMove 8s infinite alternate ease-in-out;
+            animation: glowMove 12s infinite alternate ease-in-out;
         }
         
         .glow-2 {
             bottom: 10%;
             right: 10%;
-            animation: glowMove 10s infinite alternate-reverse ease-in-out;
+            animation: glowMove 15s infinite alternate-reverse ease-in-out;
         }
         
         @keyframes glowMove {
-            0% { transform: translate(0, 0) scale(1); }
-            100% { transform: translate(50px, -30px) scale(1.2); }
+            0% { transform: translate(0, 0) scale(1); opacity: 0.4; }
+            50% { transform: translate(60px, -40px) scale(1.3); opacity: 0.7; }
+            100% { transform: translate(30px, -20px) scale(1.1); opacity: 0.5; }
         }
         
         /* Частицы */
@@ -261,11 +295,12 @@
         
         .particle {
             position: absolute;
-            width: 2px;
-            height: 2px;
-            background: rgba(255, 255, 255, 0.5);
+            width: 3px;
+            height: 3px;
+            background: rgba(200, 230, 255, 0.6);
             border-radius: 50%;
-            animation: particleFloat 20s infinite linear;
+            animation: particleFloat 25s infinite linear;
+            box-shadow: 0 0 8px rgba(100, 200, 255, 0.4);
         }
         
         @keyframes particleFloat {
@@ -274,13 +309,13 @@
                 opacity: 0;
             }
             10% {
-                opacity: 1;
+                opacity: 0.7;
             }
             90% {
-                opacity: 1;
+                opacity: 0.7;
             }
             100% {
-                transform: translate(100px, -100px);
+                transform: translate(120px, -120px);
                 opacity: 0;
             }
         }
@@ -301,20 +336,26 @@
         <h1 class="main-title">WEBTRACE</h1>
         
         <div class="cards-container">
-            <div class="card card-1">
-                <h2 class="card-title">@WebTraceSearchBot</h2>
-                <p class="card-text">Лучший инструмент для OSINT разведки, имеются куча доступных ключей и команд. Быстрый поиск по 50+ социальным сетям и платформам.</p>
-            </div>
+            <a href="https://t.me/WebTraceSearchBot" target="_blank" class="card-link">
+                <div class="card card-1">
+                    <h2 class="card-title">@WebTraceSearchBot</h2>
+                    <p class="card-text">Лучший инструмент для OSINT разведки, имеются куча доступных ключей и команд. Быстрый поиск по 50+ социальным сетям и платформам.</p>
+                </div>
+            </a>
             
-            <div class="card card-2">
-                <h2 class="card-title">@WebTraceChannel</h2>
-                <p class="card-text">Телеграм канал где выпускаются обновления на бота. Новые функции, улучшения и эксклюзивные возможности первыми!</p>
-            </div>
+            <a href="https://t.me/WebTraceChannel" target="_blank" class="card-link">
+                <div class="card card-2">
+                    <h2 class="card-title">@WebTraceChannel</h2>
+                    <p class="card-text">Телеграм канал где выпускаются обновления на бота. Новые функции, улучшения и эксклюзивные возможности первыми!</p>
+                </div>
+            </a>
             
-            <div class="card card-3">
-                <h2 class="card-title">@WebTraceSupport</h2>
-                <p class="card-text">Поддержка которая ответит всегда. Помощь в настройке, ответы на вопросы и решение проблем 24/7.</p>
-            </div>
+            <a href="https://t.me/WebTraceSupport" target="_blank" class="card-link">
+                <div class="card card-3">
+                    <h2 class="card-title">@WebTraceSupport</h2>
+                    <p class="card-text">Поддержка которая ответит всегда. Помощь в настройке, ответы на вопросы и решение проблем 24/7.</p>
+                </div>
+            </a>
         </div>
     </div>
 
@@ -322,7 +363,7 @@
         // Создание снежинок
         function createSnowflakes() {
             const snowflakesContainer = document.getElementById('snowflakes');
-            const snowflakeCount = 40;
+            const snowflakeCount = 35;
             
             for (let i = 0; i < snowflakeCount; i++) {
                 const snowflake = document.createElement('div');
@@ -330,11 +371,11 @@
                 snowflake.innerHTML = '❄';
                 
                 // Случайные параметры
-                const size = Math.random() * 15 + 10;
+                const size = Math.random() * 12 + 8;
                 const left = Math.random() * 100;
                 const top = Math.random() * 100;
-                const animationDuration = Math.random() * 10 + 10;
-                const animationDelay = Math.random() * 5;
+                const animationDuration = Math.random() * 15 + 15;
+                const animationDelay = Math.random() * 8;
                 
                 snowflake.style.left = left + 'vw';
                 snowflake.style.top = top + 'vh';
@@ -349,7 +390,7 @@
         // Создание частиц
         function createParticles() {
             const particlesContainer = document.getElementById('particles');
-            const particleCount = 30;
+            const particleCount = 25;
             
             for (let i = 0; i < particleCount; i++) {
                 const particle = document.createElement('div');
@@ -357,9 +398,9 @@
                 
                 const left = Math.random() * 100;
                 const top = Math.random() * 100;
-                const size = Math.random() * 2 + 1;
-                const duration = Math.random() * 20 + 10;
-                const delay = Math.random() * 10;
+                const size = Math.random() * 2 + 2;
+                const duration = Math.random() * 25 + 15;
+                const delay = Math.random() * 12;
                 
                 particle.style.left = left + 'vw';
                 particle.style.top = top + 'vh';
@@ -371,6 +412,21 @@
                 particlesContainer.appendChild(particle);
             }
         }
+        
+        // Добавляем стили для ссылок
+        const style = document.createElement('style');
+        style.textContent = `
+            .card-link {
+                text-decoration: none;
+                display: block;
+                color: inherit;
+            }
+            
+            .card-link:hover {
+                text-decoration: none;
+            }
+        `;
+        document.head.appendChild(style);
         
         // Запуск при загрузке
         document.addEventListener('DOMContentLoaded', function() {
