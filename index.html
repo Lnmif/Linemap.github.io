@@ -1048,4 +1048,186 @@
             if (result.tags && result.tags !== 'null') {
                 html += `
                     <div class="info-card">
-                        <div class
+                        <div class="info-label">🏷️ Теги</div>
+                        <div class="info-value">${result.tags}</div>
+                    </div>
+                `;
+            }
+            
+            // Статус
+            if (result.status && result.status !== 'null' && result.status !== 'ready') {
+                html += `
+                    <div class="info-card">
+                        <div class="info-label">🟢 Статус</div>
+                        <div class="info-value">${result.status}</div>
+                    </div>
+                `;
+            }
+            
+            // Дата регистрации
+            if (result.reg_date || result.record_date || result.created_at) {
+                const regDate = result.reg_date || result.record_date || result.created_at;
+                html += `
+                    <div class="info-card">
+                        <div class="info-label">📅 Дата регистрации</div>
+                        <div class="info-value">${formatDate(regDate)}</div>
+                    </div>
+                `;
+            }
+            
+            // Последняя активность
+            if (result.last_online || result.last_update || result.updated_at) {
+                const lastOnline = result.last_online || result.last_update || result.updated_at;
+                html += `
+                    <div class="info-card">
+                        <div class="info-label">🕒 Последняя активность</div>
+                        <div class="info-value">${formatDate(lastOnline)}</div>
+                    </div>
+                `;
+            }
+            
+            // ID пользователя
+            if (result.user_id || result.system_id || result.fcid) {
+                const userId = result.user_id || result.system_id || result.fcid;
+                html += `
+                    <div class="info-card">
+                        <div class="info-label">🆔 ID пользователя</div>
+                        <div class="info-value">${userId}</div>
+                    </div>
+                `;
+            }
+            
+            return html;
+        }
+
+        // Вспомогательные функции форматирования
+        function formatPhone(phone) {
+            const cleanPhone = phone.replace(/\D/g, '');
+            if (cleanPhone.length === 11) {
+                return cleanPhone.replace(/(\d{1})(\d{3})(\d{3})(\d{2})(\d{2})/, '+$1 ($2) $3-$4-$5');
+            }
+            return phone;
+        }
+
+        function formatDate(dateString) {
+            try {
+                // Убираем префикс b' для Python bytes
+                const cleanDateString = dateString.replace(/^b'|'$/g, '');
+                const date = new Date(cleanDateString);
+                if (isNaN(date.getTime())) {
+                    // Пробуем парсить даты в формате DD.MM.YYYY
+                    const parts = cleanDateString.split('.');
+                    if (parts.length === 3) {
+                        const day = parseInt(parts[0]);
+                        const month = parseInt(parts[1]) - 1;
+                        const year = parseInt(parts[2]);
+                        const parsedDate = new Date(year, month, day);
+                        if (!isNaN(parsedDate.getTime())) {
+                            return parsedDate.toLocaleDateString('ru-RU', {
+                                year: 'numeric',
+                                month: 'long',
+                                day: 'numeric'
+                            });
+                        }
+                    }
+                    return cleanDateString;
+                }
+                return date.toLocaleDateString('ru-RU', {
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit'
+                });
+            } catch (e) {
+                return dateString;
+            }
+        }
+
+        function formatAddress(address, result) {
+            let fullAddress = address;
+            
+            // Собираем полный адрес из компонентов
+            if (result.registred_city && result.registred_street && result.registred_house) {
+                fullAddress = `${result.registred_city}, ${result.registred_street}, д. ${result.registred_house}`;
+                if (result.registred_flat) {
+                    fullAddress += `, кв. ${result.registred_flat}`;
+                }
+            }
+            
+            return fullAddress.replace(/^b'|'$/g, '');
+        }
+
+        function formatCurrency(amount) {
+            return parseInt(amount).toLocaleString('ru-RU');
+        }
+
+        function getSourceName(source) {
+            const sourceNames = {
+                'numbuster_2018_2019': 'Numbuster 2018-2019',
+                'getcontact_2021': 'GetContact 2021',
+                'dengisrazy_ru2024': 'ДеньгиСразу 2024',
+                'dns_shop2022': 'DNS Shop 2022',
+                'himera_2023': 'Химера 2023',
+                'oneclickmoney_ru_2024': 'OneClickMoney 2024',
+                'qzaem': 'Qzaem',
+                'russian_tax_2022': 'Налоговая РФ 2022',
+                'whatsapp_russia': 'WhatsApp Россия',
+                'facebook_russia': 'Facebook Россия',
+                'nalogrf2023': 'Налог РФ 2023',
+                'zaymer_ru': 'Zaymer.ru'
+            };
+            return sourceNames[source] || source;
+        }
+
+        function getSourceIcon(source) {
+            const sourceIcons = {
+                'numbuster_2018_2019': '📱',
+                'getcontact_2021': '👥',
+                'dengisrazy_ru2024': '💰',
+                'dns_shop2022': '🛒',
+                'himera_2023': '🔍',
+                'oneclickmoney_ru_2024': '💸',
+                'qzaem': '🏦',
+                'russian_tax_2022': '🏛️',
+                'whatsapp_russia': '💬',
+                'facebook_russia': '📘',
+                'nalogrf2023': '📊',
+                'zaymer_ru': '💳'
+            };
+            return sourceIcons[source] || '📄';
+        }
+
+        function getLatestYear(results) {
+            const years = results.map(result => {
+                const dateStr = result.reg_date || result.record_date || result.created_at;
+                if (dateStr) {
+                    const year = new Date(dateStr).getFullYear();
+                    return isNaN(year) ? null : year;
+                }
+                return null;
+            }).filter(year => year !== null);
+            
+            return years.length > 0 ? Math.max(...years) : new Date().getFullYear();
+        }
+        
+        function showError(message) {
+            const results = document.getElementById('results');
+            results.innerHTML = `<div class="error">${message}</div>`;
+            results.classList.add('active');
+            
+            const searchBtn = document.getElementById('searchBtn');
+            searchBtn.disabled = false;
+            searchBtn.textContent = 'Найти информацию';
+        }
+        
+        // Инициализация
+        document.addEventListener('DOMContentLoaded', function() {
+            createSnowflakes();
+            createParticles();
+            initTabs();
+            initSearch();
+        });
+    </script>
+</body>
+</html>
