@@ -784,163 +784,427 @@
                 return;
             }
             
-            // Форматируем ответ API в красивый вид
-            let html = formatApiData(data);
-            results.innerHTML = html;
+            // Красивое форматирование данных из API
+function formatApiData(data) {
+    if (!data.results || data.results.length === 0) {
+        return '<div class="error">Информация по данному номеру не найдена</div>';
+    }
+    
+    let html = '';
+    
+    // Статистика поиска
+    html += `
+        <div class="result-item">
+            <div class="result-title">📊 Статистика поиска</div>
+            <div class="stats">
+                <div class="stat-item">
+                    <div class="stat-value">${data.results.length}</div>
+                    <div class="stat-label">найдено записей</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value">${data.search_time_seconds || '0.00'}s</div>
+                    <div class="stat-label">время поиска</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value">${getLatestYear(data.results)}</div>
+                    <div class="stat-label">актуальность данных</div>
+                </div>
+            </div>
+        </div>
+    `;
+    
+    // Группируем данные по источникам для лучшего отображения
+    const groupedResults = groupResultsBySource(data.results);
+    
+    // Обрабатываем каждую группу данных
+    Object.keys(groupedResults).forEach(source => {
+        const results = groupedResults[source];
+        html += formatResultsGroup(source, results);
+    });
+    
+    return html;
+}
+
+// Группировка результатов по источникам данных
+function groupResultsBySource(results) {
+    const groups = {};
+    
+    results.forEach(result => {
+        const source = result.data || 'Неизвестный источник';
+        if (!groups[source]) {
+            groups[source] = [];
         }
-        
-        // Красивое форматирование данных из API
-        function formatApiData(data) {
-            if (!data.results || data.results.length === 0) {
-                return '<div class="error">Информация по данному номеру не найдена</div>';
-            }
-            
-            let html = '';
-            
-            // Статистика поиска
+        groups[source].push(result);
+    });
+    
+    return groups;
+}
+
+// Форматирование группы результатов
+function formatResultsGroup(source, results) {
+    let html = '';
+    const sourceName = getSourceName(source);
+    
+    html += `
+        <div class="result-item">
+            <div class="result-title">
+                ${getSourceIcon(source)} ${sourceName}
+                <span class="badge source-badge">${results.length} записей</span>
+            </div>
+            <div class="result-grid">
+    `;
+    
+    // Обрабатываем первую запись как основную
+    const mainResult = results[0];
+    html += formatMainInfo(mainResult);
+    
+    // Дополнительные записи из этого же источника
+    if (results.length > 1) {
+        html += `
+            <div class="info-card" style="grid-column: 1 / -1;">
+                <div class="info-label">📋 Дополнительные записи</div>
+                <div style="display: flex; flex-wrap: wrap; gap: 0.5rem;">
+        `;
+        results.slice(1).forEach((result, index) => {
+            html += `<span class="badge">Запись ${index + 2}</span>`;
+        });
+        html += `</div></div>`;
+    }
+    
+    html += `</div></div>`;
+    
+    return html;
+}
+
+// Форматирование основной информации
+function formatMainInfo(result) {
+    let html = '';
+    
+    // ФИО и личные данные
+    const fio = result.fio || result.full_name || result.fullname || result.name || result.pib;
+    if (fio && fio !== 'null' && fio !== '1') {
+        html += `
+            <div class="info-card">
+                <div class="info-label">👤 ФИО</div>
+                <div class="info-value">${fio}</div>
+            </div>
+        `;
+    }
+    
+    // Телефон
+    if (result.phone) {
+        html += `
+            <div class="info-card">
+                <div class="info-label">📞 Телефон</div>
+                <div class="info-value">${formatPhone(result.phone)}</div>
+            </div>
+        `;
+    }
+    
+    // Дополнительные телефоны
+    const additionalPhones = [];
+    for (let i = 1; i <= 5; i++) {
+        const phoneKey = `phone${i}`;
+        if (result[phoneKey] && result[phoneKey] !== result.phone) {
+            additionalPhones.push(result[phoneKey]);
+        }
+    }
+    if (additionalPhones.length > 0) {
+        html += `
+            <div class="info-card">
+                <div class="info-label">📱 Доп. телефоны</div>
+                <div class="info-value">${additionalPhones.map(p => formatPhone(p)).join('<br>')}</div>
+            </div>
+        `;
+    }
+    
+    // Email
+    if (result.email && result.email !== 'null') {
+        html += `
+            <div class="info-card">
+                <div class="info-label">📧 Email</div>
+                <div class="info-value">${result.email}</div>
+            </div>
+        `;
+    }
+    
+    // Дата рождения
+    const birthDate = result.birthdate || result.birth_date || result.bdate || result.birthday;
+    if (birthDate && birthDate !== 'null') {
+        html += `
+            <div class="info-card">
+                <div class="info-label">🎂 Дата рождения</div>
+                <div class="info-value">${formatDate(birthDate)}</div>
+            </div>
+        `;
+    }
+    
+    // Паспортные данные
+    if (result.passport_info || (result.passport_series && result.passport_number)) {
+        const passportInfo = result.passport_info || 
+            `Серия ${result.passport_series} № ${result.passport_number}`;
+        html += `
+            <div class="info-card">
+                <div class="info-label">🆔 Паспорт</div>
+                <div class="info-value">${passportInfo}</div>
+            </div>
+        `;
+    }
+    
+    // Дата выдачи паспорта
+    if (result.passport_date && result.passport_date !== 'null') {
+        html += `
+            <div class="info-card">
+                <div class="info-label">📅 Выдан</div>
+                <div class="info-value">${formatDate(result.passport_date)}</div>
+            </div>
+        `;
+    }
+    
+    // ИНН
+    if (result.inn || result.INN) {
+        html += `
+            <div class="info-card">
+                <div class="info-label">💳 ИНН</div>
+                <div class="info-value">${result.inn || result.INN}</div>
+            </div>
+        `;
+    }
+    
+    // СНИЛС
+    if (result.snils || result.snils_2) {
+        const snils = result.snils || result.snils_2;
+        if (snils !== 'null') {
             html += `
-                <div class="result-item">
-                    <div class="result-title">📊 Статистика поиска</div>
-                    <div class="stats">
-                        <div class="stat-item">
-                            <div class="stat-value">${data.results.length}</div>
-                            <div class="stat-label">найдено записей</div>
-                        </div>
-                        <div class="stat-item">
-                            <div class="stat-value">${data.search_time_seconds || '0.00'}s</div>
-                            <div class="stat-label">время поиска</div>
-                        </div>
-                        <div class="stat-item">
-                            <div class="stat-value">${new Date().getFullYear()}</div>
-                            <div class="stat-label">актуальность данных</div>
-                        </div>
-                    </div>
+                <div class="info-card">
+                    <div class="info-label">📄 СНИЛС</div>
+                    <div class="info-value">${snils}</div>
                 </div>
             `;
-            
-            // Обрабатываем каждую найденную запись
-            data.results.forEach((result, index) => {
-                const source = result.data || result.bk_type || 'Неизвестный источник';
-                
-                html += `
-                    <div class="result-item">
-                        <div class="result-title">
-                            📝 Запись ${index + 1}
-                            <span class="badge source-badge">${source}</span>
-                        </div>
-                        <div class="result-grid">
-                `;
-                
-                // Основная информация
-                if (result.pib && result.pib !== 'null') {
-                    html += `
-                        <div class="info-card">
-                            <div class="info-label">👤 ФИО</div>
-                            <div class="info-value">${result.pib}</div>
-                        </div>
-                    `;
-                }
-                
-                if (result.name && result.name !== '1') {
-                    html += `
-                        <div class="info-card">
-                            <div class="info-label">🏷️ Имя в системе</div>
-                            <div class="info-value">${result.name}</div>
-                        </div>
-                    `;
-                }
-                
-                if (result.email && result.email !== 'null') {
-                    html += `
-                        <div class="info-card">
-                            <div class="info-label">📧 Email</div>
-                            <div class="info-value">${result.email}</div>
-                        </div>
-                    `;
-                }
-                
-                if (result.phone) {
-                    html += `
-                        <div class="info-card">
-                            <div class="info-label">📞 Телефон</div>
-                            <div class="info-value">${formatPhone(result.phone)}</div>
-                        </div>
-                    `;
-                }
-                
-                // Информация о местоположении
-                if (result.country || result.last_ip_country) {
-                    const country = result.country || result.last_ip_country;
-                    html += `
-                        <div class="info-card">
-                            <div class="info-label">🌍 Страна</div>
-                            <div class="info-value">${getCountryName(country)}</div>
-                        </div>
-                    `;
-                }
-                
-                if (result.last_ip) {
-                    html += `
-                        <div class="info-card">
-                            <div class="info-label">🌐 IP адрес</div>
-                            <div class="info-value">${result.last_ip}</div>
-                        </div>
-                    `;
-                }
-                
-                // Даты
-                if (result.time_registration) {
-                    html += `
-                        <div class="info-card">
-                            <div class="info-label">📅 Дата регистрации</div>
-                            <div class="info-value">${formatDate(result.time_registration)}</div>
-                        </div>
-                    `;
-                }
-                
-                // Дополнительная информация
-                if (result.currency) {
-                    html += `
-                        <div class="info-card">
-                            <div class="info-label">💰 Валюта</div>
-                            <div class="info-value">${result.currency}</div>
-                        </div>
-                    `;
-                }
-                
-                if (result.role && result.role !== '1') {
-                    html += `
-                        <div class="info-card">
-                            <div class="info-label">👥 Роль</div>
-                            <div class="info-value">${result.role}</div>
-                        </div>
-                    `;
-                }
-                
-                // ID и хэши
-                if (result.id) {
-                    html += `
-                        <div class="info-card">
-                            <div class="info-label">🆔 ID</div>
-                            <div class="info-value">${result.id}</div>
-                        </div>
-                    `;
-                }
-                
-                if (result.hash_id) {
-                    html += `
-                        <div class="info-card">
-                            <div class="info-label">🔐 Хэш ID</div>
-                            <div class="info-value">${result.hash_id}</div>
-                        </div>
-                    `;
-                }
-                
-                html += `</div></div>`;
-            });
-            
-            return html;
         }
+    }
+    
+    // Адрес регистрации
+    const regAddress = result.address_reg || result.registred_address || 
+                      result.address || result.registred_city;
+    if (regAddress && regAddress !== 'null') {
+        html += `
+            <div class="info-card">
+                <div class="info-label">🏠 Адрес регистрации</div>
+                <div class="info-value">${formatAddress(regAddress, result)}</div>
+            </div>
+        `;
+    }
+    
+    // Адрес проживания
+    const actualAddress = result.address_actual || result.actual_address || 
+                         result.actual_city;
+    if (actualAddress && actualAddress !== 'null' && actualAddress !== regAddress) {
+        html += `
+            <div class="info-card">
+                <div class="info-label">📍 Адрес проживания</div>
+                <div class="info-value">${formatAddress(actualAddress, result)}</div>
+            </div>
+        `;
+    }
+    
+    // Место работы
+    if (result.work_place && result.work_place !== 'null') {
+        html += `
+            <div class="info-card">
+                <div class="info-label">💼 Место работы</div>
+                <div class="info-value">${result.work_place}</div>
+            </div>
+        `;
+    }
+    
+    // Финансовая информация
+    if (result.sum || result.family_income) {
+        const income = result.sum || result.family_income;
+        html += `
+            <div class="info-card">
+                <div class="info-label">💰 Доход</div>
+                <div class="info-value">${formatCurrency(income)} руб.</div>
+            </div>
+        `;
+    }
+    
+    // Номер карты
+    if (result.card_number) {
+        html += `
+            <div class="info-card">
+                <div class="info-label">💳 Номер карты</div>
+                <div class="info-value">${result.card_number}</div>
+            </div>
+        `;
+    }
+    
+    // Социальные сети и теги
+    if (result.tags && result.tags !== 'null') {
+        html += `
+            <div class="info-card">
+                <div class="info-label">🏷️ Теги</div>
+                <div class="info-value">${result.tags}</div>
+            </div>
+        `;
+    }
+    
+    // Статус
+    if (result.status && result.status !== 'null' && result.status !== 'ready') {
+        html += `
+            <div class="info-card">
+                <div class="info-label">🟢 Статус</div>
+                <div class="info-value">${result.status}</div>
+            </div>
+        `;
+    }
+    
+    // Дата регистрации
+    if (result.reg_date || result.record_date || result.created_at) {
+        const regDate = result.reg_date || result.record_date || result.created_at;
+        html += `
+            <div class="info-card">
+                <div class="info-label">📅 Дата регистрации</div>
+                <div class="info-value">${formatDate(regDate)}</div>
+            </div>
+        `;
+    }
+    
+    // Последняя активность
+    if (result.last_online || result.last_update || result.updated_at) {
+        const lastOnline = result.last_online || result.last_update || result.updated_at;
+        html += `
+            <div class="info-card">
+                <div class="info-label">🕒 Последняя активность</div>
+                <div class="info-value">${formatDate(lastOnline)}</div>
+            </div>
+        `;
+    }
+    
+    // ID пользователя
+    if (result.user_id || result.system_id || result.fcid) {
+        const userId = result.user_id || result.system_id || result.fcid;
+        html += `
+            <div class="info-card">
+                <div class="info-label">🆔 ID пользователя</div>
+                <div class="info-value">${userId}</div>
+            </div>
+        `;
+    }
+    
+    return html;
+}
+
+// Вспомогательные функции форматирования
+function formatPhone(phone) {
+    const cleanPhone = phone.replace(/\D/g, '');
+    if (cleanPhone.length === 11) {
+        return cleanPhone.replace(/(\d{1})(\d{3})(\d{3})(\d{2})(\d{2})/, '+$1 ($2) $3-$4-$5');
+    }
+    return phone;
+}
+
+function formatDate(dateString) {
+    try {
+        // Убираем префикс b' для Python bytes
+        const cleanDateString = dateString.replace(/^b'|'$/g, '');
+        const date = new Date(cleanDateString);
+        if (isNaN(date.getTime())) {
+            // Пробуем парсить даты в формате DD.MM.YYYY
+            const parts = cleanDateString.split('.');
+            if (parts.length === 3) {
+                const day = parseInt(parts[0]);
+                const month = parseInt(parts[1]) - 1;
+                const year = parseInt(parts[2]);
+                const parsedDate = new Date(year, month, day);
+                if (!isNaN(parsedDate.getTime())) {
+                    return parsedDate.toLocaleDateString('ru-RU', {
+                        year: 'numeric',
+                        month: 'long',
+                        day: 'numeric'
+                    });
+                }
+            }
+            return cleanDateString;
+        }
+        return date.toLocaleDateString('ru-RU', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit'
+        });
+    } catch (e) {
+        return dateString;
+    }
+}
+
+function formatAddress(address, result) {
+    let fullAddress = address;
+    
+    // Собираем полный адрес из компонентов
+    if (result.registred_city && result.registred_street && result.registred_house) {
+        fullAddress = `${result.registred_city}, ${result.registred_street}, д. ${result.registred_house}`;
+        if (result.registred_flat) {
+            fullAddress += `, кв. ${result.registred_flat}`;
+        }
+    }
+    
+    return fullAddress.replace(/^b'|'$/g, '');
+}
+
+function formatCurrency(amount) {
+    return parseInt(amount).toLocaleString('ru-RU');
+}
+
+function getSourceName(source) {
+    const sourceNames = {
+        'numbuster_2018_2019': 'Numbuster 2018-2019',
+        'getcontact_2021': 'GetContact 2021',
+        'dengisrazy_ru2024': 'ДеньгиСразу 2024',
+        'dns_shop2022': 'DNS Shop 2022',
+        'himera_2023': 'Химера 2023',
+        'oneclickmoney_ru_2024': 'OneClickMoney 2024',
+        'qzaem': 'Qzaem',
+        'russian_tax_2022': 'Налоговая РФ 2022',
+        'whatsapp_russia': 'WhatsApp Россия',
+        'facebook_russia': 'Facebook Россия',
+        'nalogrf2023': 'Налог РФ 2023',
+        'zaymer_ru': 'Zaymer.ru'
+    };
+    return sourceNames[source] || source;
+}
+
+function getSourceIcon(source) {
+    const sourceIcons = {
+        'numbuster_2018_2019': '📱',
+        'getcontact_2021': '👥',
+        'dengisrazy_ru2024': '💰',
+        'dns_shop2022': '🛒',
+        'himera_2023': '🔍',
+        'oneclickmoney_ru_2024': '💸',
+        'qzaem': '🏦',
+        'russian_tax_2022': '🏛️',
+        'whatsapp_russia': '💬',
+        'facebook_russia': '📘',
+        'nalogrf2023': '📊',
+        'zaymer_ru': '💳'
+    };
+    return sourceIcons[source] || '📄';
+}
+
+function getLatestYear(results) {
+    const years = results.map(result => {
+        const dateStr = result.reg_date || result.record_date || result.created_at;
+        if (dateStr) {
+            const year = new Date(dateStr).getFullYear();
+            return isNaN(year) ? null : year;
+        }
+        return null;
+    }).filter(year => year !== null);
+    
+    return years.length > 0 ? Math.max(...years) : new Date().getFullYear();
+
         
         // Вспомогательные функции форматирования
         function formatPhone(phone) {
