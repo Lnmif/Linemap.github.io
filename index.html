@@ -116,8 +116,8 @@
             padding: 2rem;
             box-shadow: 0 8px 32px rgba(0, 100, 200, 0.3);
             border: 1px solid rgba(255, 255, 255, 0.2);
-            transform: translateY(50px);
-            opacity: 0;
+            transform: translateY(0);
+            opacity: 1;
             transition: all 0.4s ease;
             position: relative;
             overflow: hidden;
@@ -145,21 +145,25 @@
         }
         
         .card-1 {
-            animation: slideUp 0.8s ease-out 1s forwards;
+            animation: fadeIn 0.8s ease-out 1s forwards;
         }
         
         .card-2 {
-            animation: slideUp 0.8s ease-out 1.3s forwards;
+            animation: fadeIn 0.8s ease-out 1.3s forwards;
         }
         
         .card-3 {
-            animation: slideUp 0.8s ease-out 1.6s forwards;
+            animation: fadeIn 0.8s ease-out 1.6s forwards;
         }
         
-        @keyframes slideUp {
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
             to {
-                transform: translateY(0);
                 opacity: 1;
+                transform: translateY(0);
             }
         }
         
@@ -174,8 +178,12 @@
         }
         
         .card-title::before {
-            content: "🔍";
-            font-size: 1.3rem;
+            content: "";
+            width: 8px;
+            height: 8px;
+            background: #63B3ED;
+            border-radius: 50%;
+            display: inline-block;
         }
         
         .card-text {
@@ -185,11 +193,11 @@
         }
         
         .card:nth-child(2) .card-title::before {
-            content: "📢";
+            background: #90CDF4;
         }
         
         .card:nth-child(3) .card-title::before {
-            content: "💬";
+            background: #BEE3F8;
         }
         
         /* Пульсирующая анимация */
