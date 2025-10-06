@@ -15,23 +15,26 @@
         
         body {
             font-family: 'Inter', sans-serif;
-            background: linear-gradient(135deg, 
-                #0f2b46 0%,
-                #1a3a5f 25%,
-                #2d5a8c 50%,
-                #4a7fb8 75%,
-                #6ba8d6 100%);
+            background: 
+                linear-gradient(135deg, 
+                    #0a1929 0%,
+                    #0f2b3d 20%,
+                    #143b52 40%,
+                    #1a5c7a 60%,
+                    #1e7a5c 80%,
+                    #1a5c45 100%);
             min-height: 100vh;
             overflow-x: hidden;
             position: relative;
             background-size: 400% 400%;
-            animation: aurora 15s ease infinite;
-            filter: blur(0.3px);
+            animation: aurora 20s ease infinite;
         }
         
         @keyframes aurora {
             0% { background-position: 0% 50%; }
+            25% { background-position: 50% 75%; }
             50% { background-position: 100% 50%; }
+            75% { background-position: 50% 25%; }
             100% { background-position: 0% 50%; }
         }
         
@@ -48,33 +51,33 @@
         
         .snowflake {
             position: absolute;
-            color: rgba(200, 230, 255, 0.7);
-            font-size: 18px;
-            opacity: 0.6;
-            animation: float 20s infinite linear;
-            text-shadow: 0 0 10px rgba(100, 200, 255, 0.5);
+            color: rgba(120, 220, 220, 0.4);
+            font-size: 16px;
+            opacity: 0.5;
+            animation: float 25s infinite linear;
+            text-shadow: 0 0 8px rgba(80, 200, 200, 0.3);
         }
         
         @keyframes float {
             0% {
                 transform: translate(0, 0) rotate(0deg);
-                opacity: 0.6;
+                opacity: 0.5;
             }
             25% {
-                transform: translate(15px, 40px) rotate(90deg);
-                opacity: 0.4;
-            }
-            50% {
-                transform: translate(-10px, 80px) rotate(180deg);
-                opacity: 0.6;
-            }
-            75% {
-                transform: translate(20px, 120px) rotate(270deg);
+                transform: translate(12px, 30px) rotate(90deg);
                 opacity: 0.3;
             }
+            50% {
+                transform: translate(-8px, 60px) rotate(180deg);
+                opacity: 0.5;
+            }
+            75% {
+                transform: translate(15px, 90px) rotate(270deg);
+                opacity: 0.2;
+            }
             100% {
-                transform: translate(0, 160px) rotate(360deg);
-                opacity: 0.6;
+                transform: translate(0, 120px) rotate(360deg);
+                opacity: 0.5;
             }
         }
         
@@ -97,12 +100,12 @@
             font-size: 4.5rem;
             font-weight: 700;
             color: white;
-            text-shadow: 0 4px 20px rgba(100, 200, 255, 0.6);
+            text-shadow: 0 4px 20px rgba(80, 200, 200, 0.5);
             margin-bottom: 3rem;
             transform: translateY(-100px);
             opacity: 0;
             animation: slideDown 1s ease-out 0.5s forwards;
-            background: linear-gradient(135deg, #a8d8ff, #c2e6ff, #ddf2ff);
+            background: linear-gradient(135deg, #4fd1c7, #38b2ac, #2c7a7b);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
@@ -124,13 +127,19 @@
             position: relative;
         }
         
+        .card-link {
+            text-decoration: none;
+            display: block;
+            color: inherit;
+        }
+        
         .card {
-            background: rgba(255, 255, 255, 0.08);
-            backdrop-filter: blur(20px);
+            background: rgba(255, 255, 255, 0.07);
+            backdrop-filter: blur(25px);
             border-radius: 20px;
             padding: 2rem;
-            box-shadow: 0 8px 32px rgba(100, 180, 255, 0.2);
-            border: 1px solid rgba(255, 255, 255, 0.15);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
             transform: translateY(-100px) scale(0.9);
             opacity: 0;
             transition: all 0.4s ease;
@@ -146,7 +155,7 @@
             left: -100%;
             width: 100%;
             height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.08), transparent);
             transition: left 0.6s ease;
         }
         
@@ -156,9 +165,9 @@
         
         .card:hover {
             transform: translateY(-5px) scale(1.02);
-            box-shadow: 0 15px 40px rgba(100, 200, 255, 0.3);
-            background: rgba(255, 255, 255, 0.12);
-            border: 1px solid rgba(255, 255, 255, 0.25);
+            box-shadow: 0 15px 40px rgba(64, 180, 180, 0.4);
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(64, 180, 180, 0.3);
         }
         
         .card-1 {
@@ -191,7 +200,7 @@
         .card-title {
             font-size: 1.5rem;
             font-weight: 600;
-            color: #d4edff;
+            color: #a7f3d0;
             margin-bottom: 0.5rem;
             display: flex;
             align-items: center;
@@ -200,41 +209,43 @@
         }
         
         .card:hover .card-title {
-            color: #ffffff;
+            color: #6ee7b7;
+            text-shadow: 0 0 10px rgba(110, 231, 183, 0.3);
         }
         
         .card-title::before {
             content: "";
             width: 8px;
             height: 8px;
-            background: #a8d8ff;
+            background: #4fd1c7;
             border-radius: 50%;
             display: inline-block;
-            transition: background 0.3s ease;
+            transition: all 0.3s ease;
         }
         
         .card:hover .card-title::before {
-            background: #ffffff;
-            box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+            background: #6ee7b7;
+            box-shadow: 0 0 8px rgba(110, 231, 183, 0.5);
+            transform: scale(1.2);
         }
         
         .card-text {
-            color: #c2e6ff;
+            color: #cbd5e0;
             line-height: 1.6;
             font-size: 1.1rem;
             transition: color 0.3s ease;
         }
         
         .card:hover .card-text {
-            color: #e6f7ff;
+            color: #e2e8f0;
         }
         
         .card:nth-child(2) .card-title::before {
-            background: #b8e1ff;
+            background: #38b2ac;
         }
         
         .card:nth-child(3) .card-title::before {
-            background: #c8ebff;
+            background: #2c7a7b;
         }
         
         /* Адаптивность */
@@ -256,30 +267,45 @@
         /* Дополнительные декоративные элементы */
         .glow {
             position: fixed;
-            width: 400px;
-            height: 400px;
-            background: radial-gradient(circle, rgba(100, 180, 255, 0.2) 0%, transparent 70%);
+            width: 500px;
+            height: 500px;
             border-radius: 50%;
-            filter: blur(80px);
+            filter: blur(100px);
             z-index: 1;
+            opacity: 0.3;
         }
         
         .glow-1 {
             top: 10%;
             left: 10%;
-            animation: glowMove 12s infinite alternate ease-in-out;
+            background: radial-gradient(circle, rgba(31, 128, 128, 0.4) 0%, transparent 70%);
+            animation: glowMove 15s infinite alternate ease-in-out;
         }
         
         .glow-2 {
             bottom: 10%;
             right: 10%;
-            animation: glowMove 15s infinite alternate-reverse ease-in-out;
+            background: radial-gradient(circle, rgba(45, 122, 123, 0.3) 0%, transparent 70%);
+            animation: glowMove 18s infinite alternate-reverse ease-in-out;
+        }
+        
+        .glow-3 {
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: radial-gradient(circle, rgba(79, 209, 199, 0.2) 0%, transparent 70%);
+            animation: glowPulse 12s infinite ease-in-out;
         }
         
         @keyframes glowMove {
-            0% { transform: translate(0, 0) scale(1); opacity: 0.4; }
-            50% { transform: translate(60px, -40px) scale(1.3); opacity: 0.7; }
-            100% { transform: translate(30px, -20px) scale(1.1); opacity: 0.5; }
+            0% { transform: translate(0, 0) scale(1); }
+            50% { transform: translate(80px, -60px) scale(1.4); }
+            100% { transform: translate(40px, -30px) scale(1.2); }
+        }
+        
+        @keyframes glowPulse {
+            0%, 100% { opacity: 0.2; transform: translate(-50%, -50%) scale(1); }
+            50% { opacity: 0.4; transform: translate(-50%, -50%) scale(1.3); }
         }
         
         /* Частицы */
@@ -295,12 +321,12 @@
         
         .particle {
             position: absolute;
-            width: 3px;
-            height: 3px;
-            background: rgba(200, 230, 255, 0.6);
+            width: 2px;
+            height: 2px;
+            background: rgba(100, 230, 200, 0.4);
             border-radius: 50%;
-            animation: particleFloat 25s infinite linear;
-            box-shadow: 0 0 8px rgba(100, 200, 255, 0.4);
+            animation: particleFloat 30s infinite linear;
+            box-shadow: 0 0 6px rgba(100, 230, 200, 0.3);
         }
         
         @keyframes particleFloat {
@@ -309,13 +335,13 @@
                 opacity: 0;
             }
             10% {
-                opacity: 0.7;
+                opacity: 0.6;
             }
             90% {
-                opacity: 0.7;
+                opacity: 0.6;
             }
             100% {
-                transform: translate(120px, -120px);
+                transform: translate(150px, -150px);
                 opacity: 0;
             }
         }
@@ -331,6 +357,7 @@
     <!-- Декоративные свечения -->
     <div class="glow glow-1"></div>
     <div class="glow glow-2"></div>
+    <div class="glow glow-3"></div>
     
     <div class="container">
         <h1 class="main-title">WEBTRACE</h1>
@@ -363,7 +390,7 @@
         // Создание снежинок
         function createSnowflakes() {
             const snowflakesContainer = document.getElementById('snowflakes');
-            const snowflakeCount = 35;
+            const snowflakeCount = 30;
             
             for (let i = 0; i < snowflakeCount; i++) {
                 const snowflake = document.createElement('div');
@@ -371,11 +398,11 @@
                 snowflake.innerHTML = '❄';
                 
                 // Случайные параметры
-                const size = Math.random() * 12 + 8;
+                const size = Math.random() * 10 + 6;
                 const left = Math.random() * 100;
                 const top = Math.random() * 100;
-                const animationDuration = Math.random() * 15 + 15;
-                const animationDelay = Math.random() * 8;
+                const animationDuration = Math.random() * 20 + 20;
+                const animationDelay = Math.random() * 10;
                 
                 snowflake.style.left = left + 'vw';
                 snowflake.style.top = top + 'vh';
@@ -390,7 +417,7 @@
         // Создание частиц
         function createParticles() {
             const particlesContainer = document.getElementById('particles');
-            const particleCount = 25;
+            const particleCount = 20;
             
             for (let i = 0; i < particleCount; i++) {
                 const particle = document.createElement('div');
@@ -398,9 +425,9 @@
                 
                 const left = Math.random() * 100;
                 const top = Math.random() * 100;
-                const size = Math.random() * 2 + 2;
-                const duration = Math.random() * 25 + 15;
-                const delay = Math.random() * 12;
+                const size = Math.random() * 1.5 + 1;
+                const duration = Math.random() * 30 + 20;
+                const delay = Math.random() * 15;
                 
                 particle.style.left = left + 'vw';
                 particle.style.top = top + 'vh';
@@ -412,21 +439,6 @@
                 particlesContainer.appendChild(particle);
             }
         }
-        
-        // Добавляем стили для ссылок
-        const style = document.createElement('style');
-        style.textContent = `
-            .card-link {
-                text-decoration: none;
-                display: block;
-                color: inherit;
-            }
-            
-            .card-link:hover {
-                text-decoration: none;
-            }
-        `;
-        document.head.appendChild(style);
         
         // Запуск при загрузке
         document.addEventListener('DOMContentLoaded', function() {
