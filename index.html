@@ -349,25 +349,6 @@
             transform: none;
         }
         
-        .api-url {
-            background: rgba(0, 0, 0, 0.3);
-            border-radius: 10px;
-            padding: 1rem;
-            margin-bottom: 1rem;
-            border: 1px solid rgba(79, 209, 199, 0.3);
-            word-break: break-all;
-            font-family: 'Courier New', monospace;
-            font-size: 0.9rem;
-            color: #6ee7b7;
-        }
-        
-        .api-label {
-            color: #a7f3d0;
-            font-size: 0.8rem;
-            margin-bottom: 0.5rem;
-            display: block;
-        }
-        
         .results {
             background: rgba(255, 255, 255, 0.07);
             backdrop-filter: blur(25px);
@@ -576,13 +557,6 @@
             <div class="search-form">
                 <input type="text" class="search-input" placeholder="Введите номер телефона (например: 79991234567)" id="phoneInput">
                 <button class="search-btn" id="searchBtn">Найти информацию</button>
-                
-                <div class="api-url-container">
-                    <span class="api-label">API запрос:</span>
-                    <div class="api-url" id="apiUrl">
-                        https://api.depsearch.digital/quest="number"?token=nxTNNkMjH3PPv4bmven11vN2ZjFu8xVs
-                    </div>
-                </div>
             </div>
             
             <div class="results" id="results"></div>
@@ -670,18 +644,6 @@
             const searchBtn = document.getElementById('searchBtn');
             const phoneInput = document.getElementById('phoneInput');
             const results = document.getElementById('results');
-            const apiUrlElement = document.getElementById('apiUrl');
-            
-            // Обновляем API URL при вводе номера
-            phoneInput.addEventListener('input', () => {
-                const phoneNumber = phoneInput.value.trim();
-                if (phoneNumber) {
-                    const apiUrl = `${API_CONFIG.baseUrl}/quest="${phoneNumber}"?token=${API_CONFIG.token}`;
-                    apiUrlElement.textContent = apiUrl;
-                } else {
-                    apiUrlElement.textContent = `${API_CONFIG.baseUrl}/quest="number"?token=${API_CONFIG.token}`;
-                }
-            });
             
             searchBtn.addEventListener('click', async () => {
                 const phoneNumber = phoneInput.value.trim();
@@ -709,9 +671,9 @@
             });
         }
         
-        // Реальный API запрос
+        // Реальный API запрос БЕЗ кавычек
         async function makeApiRequest(phoneNumber) {
-            const apiUrl = `${API_CONFIG.baseUrl}/quest="${phoneNumber}"?token=${API_CONFIG.token}`;
+            const apiUrl = `${API_CONFIG.baseUrl}/quest=${phoneNumber}?token=${API_CONFIG.token}`;
             
             console.log('Выполняем API запрос:', apiUrl);
             
