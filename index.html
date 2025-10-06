@@ -373,10 +373,16 @@
         
         .result-item {
             background: rgba(255, 255, 255, 0.05);
-            border-radius: 10px;
-            padding: 1rem;
-            margin-bottom: 1rem;
-            border-left: 3px solid #4fd1c7;
+            border-radius: 15px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            border-left: 4px solid #4fd1c7;
+            transition: all 0.3s ease;
+        }
+        
+        .result-item:hover {
+            background: rgba(255, 255, 255, 0.08);
+            transform: translateX(5px);
         }
         
         .result-item:last-child {
@@ -386,31 +392,85 @@
         .result-title {
             color: #6ee7b7;
             font-weight: 600;
+            margin-bottom: 1rem;
+            font-size: 1.3rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .result-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+        }
+        
+        .info-card {
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 10px;
+            padding: 1rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .info-label {
+            color: #90cdf4;
+            font-size: 0.85rem;
+            margin-bottom: 0.3rem;
+            font-weight: 500;
+        }
+        
+        .info-value {
+            color: #e2e8f0;
+            font-size: 1rem;
+            font-weight: 600;
+            word-break: break-word;
+        }
+        
+        .badge {
+            display: inline-block;
+            background: rgba(79, 209, 199, 0.2);
+            color: #6ee7b7;
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            margin-right: 0.5rem;
             margin-bottom: 0.5rem;
         }
         
-        .result-text {
-            color: #cbd5e0;
-            line-height: 1.5;
-            white-space: pre-line;
+        .source-badge {
+            background: rgba(110, 231, 183, 0.2);
+            color: #a7f3d0;
+        }
+        
+        .stats {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .stat-item {
+            text-align: center;
+            flex: 1;
+        }
+        
+        .stat-value {
+            color: #6ee7b7;
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+        
+        .stat-label {
+            color: #a0aec0;
+            font-size: 0.8rem;
         }
         
         .error {
             color: #fc8181;
             text-align: center;
             padding: 1rem;
-        }
-        
-        .json-view {
-            background: rgba(0, 0, 0, 0.4);
-            border-radius: 8px;
-            padding: 1rem;
-            margin-top: 1rem;
-            overflow-x: auto;
-            font-family: 'Courier New', monospace;
-            font-size: 0.85rem;
-            color: #90cdf4;
-            border: 1px solid rgba(255, 255, 255, 0.1);
         }
         
         @media (max-width: 768px) {
@@ -429,6 +489,15 @@
             
             .tabs {
                 flex-direction: column;
+            }
+            
+            .result-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .stats {
+                flex-direction: column;
+                gap: 0.5rem;
             }
         }
         
@@ -715,71 +784,190 @@
                 return;
             }
             
-            // Форматируем ответ API
-            let html = '';
-            
-            // Если API возвращает ошибку
-            if (data.error) {
-                html = `<div class="error">Ошибка API: ${data.error}</div>`;
-            } 
-            // Если API возвращает успешный ответ
-            else if (data.success || data.data) {
-                const resultData = data.data || data;
-                
-                html += `
-                    <div class="result-item">
-                        <div class="result-title">✅ Результат поиска</div>
-                        <div class="result-text">Поиск выполнен успешно через API depsearch</div>
-                    </div>
-                `;
-                
-                // Добавляем информацию из ответа API
-                if (resultData.operator) {
-                    html += `
-                        <div class="result-item">
-                            <div class="result-title">📱 Оператор</div>
-                            <div class="result-text">${resultData.operator}</div>
-                        </div>
-                    `;
-                }
-                
-                if (resultData.region) {
-                    html += `
-                        <div class="result-item">
-                            <div class="result-title">🌍 Регион</div>
-                            <div class="result-text">${resultData.region}</div>
-                        </div>
-                    `;
-                }
-                
-                if (resultData.profiles && resultData.profiles.length > 0) {
-                    html += `
-                        <div class="result-item">
-                            <div class="result-title">🔍 Найденные профили</div>
-                            <div class="result-text">${resultData.profiles.join('\n')}</div>
-                        </div>
-                    `;
-                }
-                
-                // Показываем сырой JSON ответ
-                html += `
-                    <div class="result-item">
-                        <div class="result-title">📊 Ответ API</div>
-                        <div class="json-view">${JSON.stringify(data, null, 2)}</div>
-                    </div>
-                `;
-            } 
-            // Если структура ответа неизвестна
-            else {
-                html += `
-                    <div class="result-item">
-                        <div class="result-title">📊 Ответ API</div>
-                        <div class="json-view">${JSON.stringify(data, null, 2)}</div>
-                    </div>
-                `;
+            // Форматируем ответ API в красивый вид
+            let html = formatApiData(data);
+            results.innerHTML = html;
+        }
+        
+        // Красивое форматирование данных из API
+        function formatApiData(data) {
+            if (!data.results || data.results.length === 0) {
+                return '<div class="error">Информация по данному номеру не найдена</div>';
             }
             
-            results.innerHTML = html;
+            let html = '';
+            
+            // Статистика поиска
+            html += `
+                <div class="result-item">
+                    <div class="result-title">📊 Статистика поиска</div>
+                    <div class="stats">
+                        <div class="stat-item">
+                            <div class="stat-value">${data.results.length}</div>
+                            <div class="stat-label">найдено записей</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value">${data.search_time_seconds || '0.00'}s</div>
+                            <div class="stat-label">время поиска</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value">${new Date().getFullYear()}</div>
+                            <div class="stat-label">актуальность данных</div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            // Обрабатываем каждую найденную запись
+            data.results.forEach((result, index) => {
+                const source = result.data || result.bk_type || 'Неизвестный источник';
+                
+                html += `
+                    <div class="result-item">
+                        <div class="result-title">
+                            📝 Запись ${index + 1}
+                            <span class="badge source-badge">${source}</span>
+                        </div>
+                        <div class="result-grid">
+                `;
+                
+                // Основная информация
+                if (result.pib && result.pib !== 'null') {
+                    html += `
+                        <div class="info-card">
+                            <div class="info-label">👤 ФИО</div>
+                            <div class="info-value">${result.pib}</div>
+                        </div>
+                    `;
+                }
+                
+                if (result.name && result.name !== '1') {
+                    html += `
+                        <div class="info-card">
+                            <div class="info-label">🏷️ Имя в системе</div>
+                            <div class="info-value">${result.name}</div>
+                        </div>
+                    `;
+                }
+                
+                if (result.email && result.email !== 'null') {
+                    html += `
+                        <div class="info-card">
+                            <div class="info-label">📧 Email</div>
+                            <div class="info-value">${result.email}</div>
+                        </div>
+                    `;
+                }
+                
+                if (result.phone) {
+                    html += `
+                        <div class="info-card">
+                            <div class="info-label">📞 Телефон</div>
+                            <div class="info-value">${formatPhone(result.phone)}</div>
+                        </div>
+                    `;
+                }
+                
+                // Информация о местоположении
+                if (result.country || result.last_ip_country) {
+                    const country = result.country || result.last_ip_country;
+                    html += `
+                        <div class="info-card">
+                            <div class="info-label">🌍 Страна</div>
+                            <div class="info-value">${getCountryName(country)}</div>
+                        </div>
+                    `;
+                }
+                
+                if (result.last_ip) {
+                    html += `
+                        <div class="info-card">
+                            <div class="info-label">🌐 IP адрес</div>
+                            <div class="info-value">${result.last_ip}</div>
+                        </div>
+                    `;
+                }
+                
+                // Даты
+                if (result.time_registration) {
+                    html += `
+                        <div class="info-card">
+                            <div class="info-label">📅 Дата регистрации</div>
+                            <div class="info-value">${formatDate(result.time_registration)}</div>
+                        </div>
+                    `;
+                }
+                
+                // Дополнительная информация
+                if (result.currency) {
+                    html += `
+                        <div class="info-card">
+                            <div class="info-label">💰 Валюта</div>
+                            <div class="info-value">${result.currency}</div>
+                        </div>
+                    `;
+                }
+                
+                if (result.role && result.role !== '1') {
+                    html += `
+                        <div class="info-card">
+                            <div class="info-label">👥 Роль</div>
+                            <div class="info-value">${result.role}</div>
+                        </div>
+                    `;
+                }
+                
+                // ID и хэши
+                if (result.id) {
+                    html += `
+                        <div class="info-card">
+                            <div class="info-label">🆔 ID</div>
+                            <div class="info-value">${result.id}</div>
+                        </div>
+                    `;
+                }
+                
+                if (result.hash_id) {
+                    html += `
+                        <div class="info-card">
+                            <div class="info-label">🔐 Хэш ID</div>
+                            <div class="info-value">${result.hash_id}</div>
+                        </div>
+                    `;
+                }
+                
+                html += `</div></div>`;
+            });
+            
+            return html;
+        }
+        
+        // Вспомогательные функции форматирования
+        function formatPhone(phone) {
+            return phone.replace(/(\d{1})(\d{3})(\d{3})(\d{2})(\d{2})/, '+$1 ($2) $3-$4-$5');
+        }
+        
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            return date.toLocaleDateString('ru-RU', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+        }
+        
+        function getCountryName(code) {
+            const countries = {
+                'RU': 'Россия 🇷🇺',
+                'ru': 'Россия 🇷🇺',
+                'US': 'США 🇺🇸',
+                'UA': 'Украина 🇺🇦',
+                'KZ': 'Казахстан 🇰🇿',
+                'BY': 'Беларусь 🇧🇾'
+            };
+            return countries[code] || code;
         }
         
         function showError(message) {
