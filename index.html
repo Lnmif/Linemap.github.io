@@ -1,537 +1,214 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="ru">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Linemap | OSINT Specialist</title>
-    <style>
-        :root {
-            --dark-bg: #0f0f0f;
-            --dark-surface: #1a1a1a;
-            --dark-card: #252525;
-            --dark-border: #333333;
-            --text-primary: #f0f0f0;
-            --text-secondary: #b0b0b0;
-            --accent: #6a0dad;
-            --accent-dark: #4b0082;
-            --transition: all 0.3s ease;
-        }
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Anonymous Kids — OSINT и цифровая грамотность</title>
+  <meta name="description" content="Anonymous Kids — образовательный проект по OSINT, цифровой безопасности и помощи людям. Этика и закон прежде всего." />
+  <style>
+    :root{
+      --bg:#0f1724;
+      --muted:#9aa7bf;
+      --accent:#0ea5a4;
+      font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+    }
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
+    body{
+      margin:0;
+      background: linear-gradient(180deg,#071023 0%, #07162b 100%);
+      color:#e6eef8;
+      overflow-x:hidden;
+      overflow-y:auto;
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
+    }
 
-        body {
-            background-color: var(--dark-bg);
-            color: var(--text-primary);
-            line-height: 1.6;
-            overflow-x: hidden;
-        }
+    /* === АНИМАЦИЯ МАСКИ === */
+    .mask-overlay{
+      position:fixed;
+      top:0;
+      left:0;
+      width:100%;
+      height:100%;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      background:linear-gradient(180deg,#071023 0%, #07162b 100%);
+      z-index:999;
+      opacity:1;
+      transition:opacity 1s ease;
+    }
 
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 20px;
-        }
+    .mask-overlay img{
+      width:180px;
+      height:180px;
+      object-fit:contain;
+      transform:translateY(-200%);
+      animation:slideDown 1.8s ease forwards;
+    }
 
-        header {
-            padding: 2rem 0;
-            text-align: center;
-            background-color: var(--dark-surface);
-            border-bottom: 1px solid var(--dark-border);
-            position: relative;
-        }
+    @keyframes slideDown{
+      0%{transform:translateY(-200%); opacity:0;}
+      60%{transform:translateY(15%); opacity:1;}
+      100%{transform:translateY(0); opacity:1;}
+    }
 
-        .logo {
-            font-size: 2.5rem;
-            font-weight: 700;
-            margin-bottom: 0.5rem;
-            color: var(--text-primary);
-        }
+    /* === Основной контент === */
+    .content{
+      opacity:0;
+      transition:opacity 1s ease;
+    }
+    .content.visible{
+      opacity:1;
+    }
 
-        .tagline {
-            color: var(--text-secondary);
-            font-size: 1.1rem;
-            margin-bottom: 1rem;
-        }
+    .container{
+      max-width:980px;
+      margin:0 auto;
+      padding:24px;
+    }
 
-        .nickname {
-            display: inline-block;
-            background-color: var(--accent);
-            color: white;
-            padding: 5px 15px;
-            border-radius: 20px;
-            font-weight: 600;
-            font-size: 0.9rem;
-        }
+    header{
+      display:flex;
+      gap:16px;
+      align-items:center;
+      margin-bottom:20px;
+    }
 
-        .tabs-container {
-            display: flex;
-            justify-content: center;
-            margin: 2rem 0;
-            flex-wrap: wrap;
-            gap: 10px;
-        }
+    .logo img{width:80px;height:80px;border-radius:12px;}
 
-        .tab {
-            padding: 12px 30px;
-            background-color: var(--dark-card);
-            border: 1px solid var(--dark-border);
-            color: var(--text-secondary);
-            font-size: 1rem;
-            font-weight: 600;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: var(--transition);
-            position: relative;
-            overflow: hidden;
-        }
+    h1{font-size:28px;margin:0}
+    p.lead{margin:6px 0 0;color:var(--muted)}
+    nav{margin-top:18px;display:flex;gap:10px;flex-wrap:wrap;}
+    a.btn{
+      background:transparent;
+      border:1px solid rgba(255,255,255,0.05);
+      padding:8px 12px;
+      border-radius:10px;
+      color:var(--muted);
+      text-decoration:none;
+      font-size:14px;
+    }
 
-        .tab:hover {
-            color: var(--text-primary);
-            border-color: var(--accent);
-        }
-
-        .tab.active {
-            background-color: var(--accent);
-            color: white;
-            border-color: var(--accent);
-        }
-
-        .tab-content {
-            display: none;
-            padding: 2rem;
-            background-color: var(--dark-surface);
-            border-radius: 12px;
-            margin-bottom: 2rem;
-            border: 1px solid var(--dark-border);
-            animation: fadeIn 0.5s ease;
-        }
-
-        .tab-content.active {
-            display: block;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        h2 {
-            font-size: 2rem;
-            margin-bottom: 1.5rem;
-            color: var(--text-primary);
-            position: relative;
-            display: inline-block;
-        }
-
-        h2::after {
-            content: '';
-            position: absolute;
-            bottom: -8px;
-            left: 0;
-            width: 50px;
-            height: 3px;
-            background: var(--accent);
-            border-radius: 3px;
-        }
-
-        /* Price Tab Styles */
-        .pricing-cards {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 2rem;
-            margin-top: 2rem;
-        }
-
-        .pricing-card {
-            background-color: var(--dark-card);
-            border-radius: 12px;
-            padding: 2rem;
-            text-align: center;
-            transition: var(--transition);
-            border: 1px solid var(--dark-border);
-        }
-
-        .pricing-card:hover {
-            transform: translateY(-5px);
-            border-color: var(--accent);
-        }
-
-        .pricing-card.featured {
-            border: 2px solid var(--accent);
-            position: relative;
-        }
-
-        .featured-badge {
-            position: absolute;
-            top: -12px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: var(--accent);
-            color: white;
-            padding: 5px 15px;
-            border-radius: 20px;
-            font-size: 0.8rem;
-            font-weight: 600;
-        }
-
-        .price {
-            font-size: 2.5rem;
-            font-weight: 700;
-            margin: 1.5rem 0;
-            color: var(--text-primary);
-        }
-
-        .price span {
-            font-size: 1rem;
-            color: var(--text-secondary);
-        }
-
-        .features {
-            list-style: none;
-            margin: 1.5rem 0;
-        }
-
-        .features li {
-            padding: 8px 0;
-            color: var(--text-secondary);
-            border-bottom: 1px solid var(--dark-border);
-        }
-
-        .features li:last-child {
-            border-bottom: none;
-        }
-
-        .btn {
-            display: inline-block;
-            padding: 12px 30px;
-            background: var(--accent);
-            color: white;
-            border: none;
-            border-radius: 8px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: var(--transition);
-            text-decoration: none;
-        }
-
-        .btn:hover {
-            background: var(--accent-dark);
-            transform: translateY(-2px);
-        }
-
-        /* Bio Tab Styles */
-        .bio-content {
-            display: grid;
-            grid-template-columns: 1fr 2fr;
-            gap: 3rem;
-            align-items: center;
-        }
-
-        .profile-img {
-            width: 100%;
-            border-radius: 12px;
-            border: 1px solid var(--dark-border);
-        }
-
-        .bio-text h3 {
-            font-size: 1.5rem;
-            margin: 1.5rem 0 1rem;
-            color: var(--accent);
-        }
-
-        .skills {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-            margin-top: 1.5rem;
-        }
-
-        .skill {
-            background-color: var(--dark-card);
-            padding: 8px 15px;
-            border-radius: 20px;
-            font-size: 0.9rem;
-            color: var(--text-secondary);
-            border: 1px solid var(--dark-border);
-        }
-
-        .aliases {
-            margin-top: 1.5rem;
-            padding: 1rem;
-            background-color: var(--dark-card);
-            border-radius: 8px;
-            border-left: 4px solid var(--accent);
-        }
-
-        /* Project Tab Styles */
-        .project-card {
-            background-color: var(--dark-card);
-            border-radius: 12px;
-            padding: 2rem;
-            margin-top: 2rem;
-            border: 1px solid var(--dark-border);
-            transition: var(--transition);
-        }
-
-        .project-card:hover {
-            border-color: var(--accent);
-        }
-
-        .project-title {
-            font-size: 1.5rem;
-            margin-bottom: 1rem;
-            color: var(--accent);
-        }
-
-        .project-description {
-            color: var(--text-secondary);
-            margin-bottom: 1.5rem;
-        }
-
-        .project-link {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            color: var(--accent);
-            text-decoration: none;
-            font-weight: 600;
-            transition: var(--transition);
-        }
-
-        .project-link:hover {
-            color: var(--text-primary);
-        }
-
-        footer {
-            text-align: center;
-            padding: 2rem 0;
-            color: var(--text-secondary);
-            border-top: 1px solid var(--dark-border);
-            margin-top: 2rem;
-        }
-
-        .contact-info {
-            margin-top: 1.5rem;
-        }
-
-        .telegram-link {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            color: var(--accent);
-            text-decoration: none;
-            font-weight: 600;
-            margin-top: 1rem;
-            transition: var(--transition);
-        }
-
-        .telegram-link:hover {
-            color: var(--text-primary);
-        }
-
-        /* Responsive Design */
-        @media (max-width: 768px) {
-            .bio-content {
-                grid-template-columns: 1fr;
-            }
-            
-            .tabs-container {
-                flex-direction: column;
-                align-items: center;
-            }
-            
-            .tab {
-                width: 100%;
-                max-width: 300px;
-            }
-        }
-    </style>
+    main{margin-top:22px;display:grid;grid-template-columns:1fr 320px;gap:20px;align-items:start;}
+    .card{
+      background:rgba(255,255,255,0.03);
+      border-radius:14px;
+      padding:18px;
+      box-shadow:0 8px 30px rgba(2,6,23,0.6);
+      border:1px solid rgba(255,255,255,0.03);
+    }
+    h2{margin-top:0}
+    ul{margin:8px 0 0 18px;color:var(--muted)}
+    .aside .card{position:sticky;top:24px}
+    footer{margin-top:28px;color:var(--muted);font-size:13px;text-align:center}
+    .cta{
+      display:inline-block;
+      margin-top:12px;
+      background:linear-gradient(90deg,var(--accent), #6ee7b7 120%);
+      color:#042024;
+      padding:10px 14px;
+      border-radius:12px;
+      text-decoration:none;
+      font-weight:600;
+    }
+    @media (max-width:880px){
+      main{grid-template-columns:1fr; padding-bottom:60px}
+    }
+    code{
+      background:rgba(255,255,255,0.03);
+      padding:2px 6px;
+      border-radius:6px;
+      font-family:monospace;
+      font-size:13px;
+      color:#bfe8e7;
+    }
+  </style>
 </head>
 <body>
-    <header>
-        <div class="container">
-            <div class="logo">Linemap</div>
-            <p class="tagline">OSINT Specialist | Digital Intelligence</p>
-            <div class="nickname">@Linemap</div>
-        </div>
-    </header>
 
+  <!-- Анимация загрузки -->
+  <div class="mask-overlay" id="mask">
+    <img src="assets/mask.png" alt="Mask logo">
+  </div>
+
+  <!-- Основной контент -->
+  <div class="content" id="content">
     <div class="container">
-        <div class="tabs-container">
-            <button class="tab active" data-tab="price">Price</button>
-            <button class="tab" data-tab="bio">BIO</button>
-            <button class="tab" data-tab="project">Project</button>
+      <header>
+        <div class="logo"><img src="assets/mask.png" alt="Логотип"></div>
+        <div>
+          <h1>Anonymous Kids</h1>
+          <p class="lead">Образовательный проект по OSINT, цифровой безопасности и помощи людям. Этика и закон — наш приоритет.</p>
+          <nav>
+            <a class="btn" href="#about">О проекте</a>
+            <a class="btn" href="#tools">Инструменты</a>
+            <a class="btn" href="#ethics">Этика</a>
+            <a class="btn" href="#resources">Ресурсы</a>
+          </nav>
         </div>
+      </header>
 
-        <div id="price" class="tab-content active">
-            <h2>Услуги и цены</h2>
-            <p>Специализированные OSINT услуги для ваших нужд</p>
-            
-            <div class="pricing-cards">
-                <div class="pricing-card">
-                    <h3>Раскрытие личности</h3>
-                    <div class="price">$5+ <span>/ в зависимости от сложности</span></div>
-                    <ul class="features">
-                        <li>Идентификация личности по данным</li>
-                        <li>Анализ цифрового следа</li>
-                        <li>Подробности в DM</li>
-                    </ul>
-                    <a href="https://t.me/lnmof" class="btn">Заказать</a>
-                </div>
-                
-                <div class="pricing-card featured">
-                    <div class="featured-badge">Популярно</div>
-                    <h3>Персональное обучение OSINT</h3>
-                    <div class="price">$17</div>
-                    <ul class="features">
-                        <li>Индивидуальные занятия</li>
-                        <li>Практические методы</li>
-                        <li>Инструменты и ресурсы</li>
-                    </ul>
-                    <a href="https://t.me/lnmof" class="btn">Заказать</a>
-                </div>
-                
-                <div class="pricing-card">
-                    <h3>SW@T</h3>
-                    <div class="price">$15</div>
-                    <ul class="features">
-                        <li>Специализированная услуга</li>
-                        <li>Детали по запросу</li>
-                    </ul>
-                    <a href="https://t.me/lnmof" class="btn">Заказать</a>
-                </div>
-                
-                <div class="pricing-card">
-                    <h3>Защита (DEFF)</h3>
-                    <div class="price">$5 <span>/ месяц</span></div>
-                    <div class="price">$10 <span>/ полгода</span></div>
-                    <ul class="features">
-                        <li>Защита цифровой личности</li>
-                        <li>Консультации по безопасности</li>
-                    </ul>
-                    <a href="https://t.me/lnmof" class="btn">Заказать</a>
-                </div>
-                
-                <div class="pricing-card">
-                    <h3>Обучение анонимности</h3>
-                    <div class="price">$8</div>
-                    <ul class="features">
-                        <li>Методы сохранения анонимности</li>
-                        <li>Инструменты приватности</li>
-                    </ul>
-                    <a href="https://t.me/lnmof" class="btn">Заказать</a>
-                </div>
-                
-                <div class="pricing-card">
-                    <h3>Заказ на дом</h3>
-                    <div class="price">$6-11</div>
-                    <ul class="features">
-                        <li>Специфические запросы</li>
-                        <li>Детали обговариваются</li>
-                    </ul>
-                    <a href="https://t.me/lnmof" class="btn">Заказать</a>
-                </div>
-            </div>
-        </div>
+      <main>
+        <section>
+          <article class="card" id="about">
+            <h2>О проекте</h2>
+            <p>Anonymous Kids — это некоммерческая инициатива по обучению безопасным методам OSINT, защите персональных данных и цифровой грамотности.</p>
+          </article>
 
-        <div id="bio" class="tab-content">
-            <h2>Обо мне</h2>
-            
-            <div class="bio-content">
-                <div class="profile">
-                    <div class="profile-img" style="height: 300px; background: linear-gradient(135deg, #333, #555); display: flex; align-items: center; justify-content: center; color: white; font-size: 5rem;">
-                        <i class="fas fa-user-secret"></i>
-                    </div>
-                </div>
-                
-                <div class="bio-text">
-                    <h3>OSINT Специалист</h3>
-                    <p>Специализируюсь на разведке открытых источников (OSINT) с фокусом на цифровую разведку и анализ данных.</p>
-                    
-                    <div class="aliases">
-                        <h4>Известные алиасы:</h4>
-                        <p>SHOOTER • Linemap</p>
-                    </div>
-                    
-                    <h3>Навыки</h3>
-                    <div class="skills">
-                        <span class="skill">OSINT</span>
-                        <span class="skill">HUMINT</span>
-                        <span class="skill">GEOINT</span>
-                        <span class="skill">SOCMINT</span>
-                        <span class="skill">IMINT</span>
-                        <span class="skill">Digital Forensics</span>
-                        <span class="skill">Data Analysis</span>
-                    </div>
-                    
-                    <h3>Опыт работы</h3>
-                    <p>Более 2 лет активной работы в Telegram-сообществе OSINT специалистов. Участвовал в различных проектах и исследованиях, связанных с цифровой разведкой и анализом открытых данных.</p>
-                </div>
-            </div>
-        </div>
+          <article class="card" id="tools" style="margin-top:16px">
+            <h2>Инструменты и подходы</h2>
+            <ul>
+              <li>Поиск открытых источников (легально).</li>
+              <li>Проверка достоверности информации.</li>
+              <li>Цифровая безопасность и защита аккаунтов.</li>
+            </ul>
+          </article>
 
-        <div id="project" class="tab-content">
-            <h2>Проекты</h2>
-            <p>Мои текущие и завершенные проекты</p>
-            
-            <div class="project-card">
-                <h3 class="project-title">Колесо Фортуны</h3>
-                <p class="project-description">
-                    Проект, который выбирает судьбу для провинившихся и предоставляет человеческую защиту от интернет-мусора. 
-                    Инновационный подход к модерации и защите онлайн-сообществ.
-                </p>
-                <a href="https://t.me/FortunessWheel" class="project-link" target="_blank">
-                    Перейти к проекту →
-                </a>
-            </div>
-            
-            <div class="project-card">
-                <h3 class="project-title">OSINT База знаний</h3>
-                <p class="project-description">
-                    Собираю и систематизирую информацию по методам и инструментам OSINT. 
-                    Постоянно обновляемая база знаний для сообщества.
-                </p>
-            </div>
-        </div>
+          <article class="card" id="ethics" style="margin-top:16px">
+            <h2>Этика и закон</h2>
+            <ul>
+              <li>Работа только в рамках закона.</li>
+              <li>Уважение к частной жизни людей.</li>
+              <li>Использование знаний во благо.</li>
+            </ul>
+          </article>
+        </section>
+
+        <aside class="aside">
+          <div class="card">
+            <h3>Ресурсы</h3>
+            <ul>
+              <li><a href="#">Учебник по OSINT</a></li>
+              <li><a href="#">Защита персональных данных</a></li>
+            </ul>
+          </div>
+        </aside>
+      </main>
+
+      <footer>
+        <p>© <span id="yr"></span> Anonymous Kids — образовательный проект по OSINT.</p>
+      </footer>
     </div>
+  </div>
 
-    <footer>
-        <div class="container">
-            <p>© 2023 Linemap | OSINT Specialist</p>
-            <div class="contact-info">
-                <p>Связь исключительно через Telegram:</p>
-                <a href="https://t.me/lnmof" class="telegram-link" target="_blank">
-                    @lnmof
-                </a>
-            </div>
-        </div>
-    </footer>
+  <script>
+    // Показ контента после анимации маски
+    window.addEventListener("load", () => {
+      const mask = document.getElementById("mask");
+      const content = document.getElementById("content");
 
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const tabs = document.querySelectorAll('.tab');
-            const tabContents = document.querySelectorAll('.tab-content');
-            
-            tabs.forEach(tab => {
-                tab.addEventListener('click', () => {
-                    // Убираем активный класс у всех вкладок и контента
-                    tabs.forEach(t => t.classList.remove('active'));
-                    tabContents.forEach(content => content.classList.remove('active'));
-                    
-                    // Добавляем активный класс текущей вкладке
-                    tab.classList.add('active');
-                    
-                    // Показываем соответствующий контент
-                    const tabId = tab.getAttribute('data-tab');
-                    document.getElementById(tabId).classList.add('active');
-                });
-            });
-        });
-    </script>
+      setTimeout(() => {
+        mask.style.opacity = "0";
+        setTimeout(() => {
+          mask.style.display = "none";
+          content.classList.add("visible");
+        }, 1000);
+      }, 1800); // время анимации маски
+    });
+
+    document.getElementById("yr").textContent = new Date().getFullYear();
+  </script>
+
 </body>
 </html>
