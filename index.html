@@ -3,534 +3,269 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Linemap | OSINT Specialist</title>
+    <title>WebTrace - OSINT Разведка</title>
     <style>
-        :root {
-            --dark-bg: #0f0f0f;
-            --dark-surface: #1a1a1a;
-            --dark-card: #252525;
-            --dark-border: #333333;
-            --text-primary: #f0f0f0;
-            --text-secondary: #b0b0b0;
-            --accent: #6a0dad;
-            --accent-dark: #4b0082;
-            --transition: all 0.3s ease;
-        }
-
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap');
+        
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
-
+        
         body {
-            background-color: var(--dark-bg);
-            color: var(--text-primary);
-            line-height: 1.6;
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #87CEEB, #4682B4, #00BFFF);
+            min-height: 100vh;
             overflow-x: hidden;
-        }
-
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 20px;
-        }
-
-        header {
-            padding: 2rem 0;
-            text-align: center;
-            background-color: var(--dark-surface);
-            border-bottom: 1px solid var(--dark-border);
             position: relative;
         }
-
-        .logo {
-            font-size: 2.5rem;
-            font-weight: 700;
-            margin-bottom: 0.5rem;
-            color: var(--text-primary);
-        }
-
-        .tagline {
-            color: var(--text-secondary);
-            font-size: 1.1rem;
-            margin-bottom: 1rem;
-        }
-
-        .nickname {
-            display: inline-block;
-            background-color: var(--accent);
-            color: white;
-            padding: 5px 15px;
-            border-radius: 20px;
-            font-weight: 600;
-            font-size: 0.9rem;
-        }
-
-        .tabs-container {
-            display: flex;
-            justify-content: center;
-            margin: 2rem 0;
-            flex-wrap: wrap;
-            gap: 10px;
-        }
-
-        .tab {
-            padding: 12px 30px;
-            background-color: var(--dark-card);
-            border: 1px solid var(--dark-border);
-            color: var(--text-secondary);
-            font-size: 1rem;
-            font-weight: 600;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: var(--transition);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .tab:hover {
-            color: var(--text-primary);
-            border-color: var(--accent);
-        }
-
-        .tab.active {
-            background-color: var(--accent);
-            color: white;
-            border-color: var(--accent);
-        }
-
-        .tab-content {
-            display: none;
-            padding: 2rem;
-            background-color: var(--dark-surface);
-            border-radius: 12px;
-            margin-bottom: 2rem;
-            border: 1px solid var(--dark-border);
-            animation: fadeIn 0.5s ease;
-        }
-
-        .tab-content.active {
-            display: block;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        h2 {
-            font-size: 2rem;
-            margin-bottom: 1.5rem;
-            color: var(--text-primary);
-            position: relative;
-            display: inline-block;
-        }
-
-        h2::after {
-            content: '';
-            position: absolute;
-            bottom: -8px;
+        
+        /* Анимированные снежинки */
+        .snowflakes {
+            position: fixed;
+            top: 0;
             left: 0;
-            width: 50px;
-            height: 3px;
-            background: var(--accent);
-            border-radius: 3px;
-        }
-
-        /* Price Tab Styles */
-        .pricing-cards {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 2rem;
-            margin-top: 2rem;
-        }
-
-        .pricing-card {
-            background-color: var(--dark-card);
-            border-radius: 12px;
-            padding: 2rem;
-            text-align: center;
-            transition: var(--transition);
-            border: 1px solid var(--dark-border);
-        }
-
-        .pricing-card:hover {
-            transform: translateY(-5px);
-            border-color: var(--accent);
-        }
-
-        .pricing-card.featured {
-            border: 2px solid var(--accent);
-            position: relative;
-        }
-
-        .featured-badge {
-            position: absolute;
-            top: -12px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: var(--accent);
-            color: white;
-            padding: 5px 15px;
-            border-radius: 20px;
-            font-size: 0.8rem;
-            font-weight: 600;
-        }
-
-        .price {
-            font-size: 2.5rem;
-            font-weight: 700;
-            margin: 1.5rem 0;
-            color: var(--text-primary);
-        }
-
-        .price span {
-            font-size: 1rem;
-            color: var(--text-secondary);
-        }
-
-        .features {
-            list-style: none;
-            margin: 1.5rem 0;
-        }
-
-        .features li {
-            padding: 8px 0;
-            color: var(--text-secondary);
-            border-bottom: 1px solid var(--dark-border);
-        }
-
-        .features li:last-child {
-            border-bottom: none;
-        }
-
-        .btn {
-            display: inline-block;
-            padding: 12px 30px;
-            background: var(--accent);
-            color: white;
-            border: none;
-            border-radius: 8px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: var(--transition);
-            text-decoration: none;
-        }
-
-        .btn:hover {
-            background: var(--accent-dark);
-            transform: translateY(-2px);
-        }
-
-        /* Bio Tab Styles */
-        .bio-content {
-            display: grid;
-            grid-template-columns: 1fr 2fr;
-            gap: 3rem;
-            align-items: center;
-        }
-
-        .profile-img {
             width: 100%;
-            border-radius: 12px;
-            border: 1px solid var(--dark-border);
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
         }
-
-        .bio-text h3 {
-            font-size: 1.5rem;
-            margin: 1.5rem 0 1rem;
-            color: var(--accent);
+        
+        .snowflake {
+            position: absolute;
+            top: -10px;
+            color: #E6F7FF;
+            font-size: 20px;
+            animation: fall linear infinite;
+            opacity: 0.7;
         }
-
-        .skills {
+        
+        @keyframes fall {
+            to {
+                transform: translateY(100vh) rotate(360deg);
+                opacity: 0;
+            }
+        }
+        
+        /* Основной контейнер */
+        .container {
+            position: relative;
+            z-index: 2;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            min-height: 100vh;
             display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-            margin-top: 1.5rem;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
         }
-
-        .skill {
-            background-color: var(--dark-card);
-            padding: 8px 15px;
+        
+        /* Анимация появления заголовка */
+        .main-title {
+            font-size: 4.5rem;
+            font-weight: 700;
+            color: white;
+            text-shadow: 0 4px 20px rgba(0, 100, 200, 0.3);
+            margin-bottom: 3rem;
+            transform: translateY(-100px);
+            opacity: 0;
+            animation: slideDown 1s ease-out 0.5s forwards;
+        }
+        
+        @keyframes slideDown {
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+        
+        /* Карточки */
+        .cards-container {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+        
+        .card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
             border-radius: 20px;
-            font-size: 0.9rem;
-            color: var(--text-secondary);
-            border: 1px solid var(--dark-border);
-        }
-
-        .aliases {
-            margin-top: 1.5rem;
-            padding: 1rem;
-            background-color: var(--dark-card);
-            border-radius: 8px;
-            border-left: 4px solid var(--accent);
-        }
-
-        /* Project Tab Styles */
-        .project-card {
-            background-color: var(--dark-card);
-            border-radius: 12px;
             padding: 2rem;
-            margin-top: 2rem;
-            border: 1px solid var(--dark-border);
-            transition: var(--transition);
+            box-shadow: 0 8px 32px rgba(0, 100, 200, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            transform: translateY(50px);
+            opacity: 0;
+            transition: all 0.4s ease;
         }
-
-        .project-card:hover {
-            border-color: var(--accent);
+        
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0, 100, 200, 0.3);
         }
-
-        .project-title {
+        
+        .card-1 {
+            animation: slideUp 0.8s ease-out 1s forwards;
+        }
+        
+        .card-2 {
+            animation: slideUp 0.8s ease-out 1.3s forwards;
+        }
+        
+        .card-3 {
+            animation: slideUp 0.8s ease-out 1.6s forwards;
+        }
+        
+        @keyframes slideUp {
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+        
+        .card-title {
             font-size: 1.5rem;
-            margin-bottom: 1rem;
-            color: var(--accent);
-        }
-
-        .project-description {
-            color: var(--text-secondary);
-            margin-bottom: 1.5rem;
-        }
-
-        .project-link {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            color: var(--accent);
-            text-decoration: none;
             font-weight: 600;
-            transition: var(--transition);
-        }
-
-        .project-link:hover {
-            color: var(--text-primary);
-        }
-
-        footer {
-            text-align: center;
-            padding: 2rem 0;
-            color: var(--text-secondary);
-            border-top: 1px solid var(--dark-border);
-            margin-top: 2rem;
-        }
-
-        .contact-info {
-            margin-top: 1.5rem;
-        }
-
-        .telegram-link {
-            display: inline-flex;
+            color: #1E3A8A;
+            margin-bottom: 0.5rem;
+            display: flex;
             align-items: center;
-            gap: 8px;
-            color: var(--accent);
-            text-decoration: none;
-            font-weight: 600;
-            margin-top: 1rem;
-            transition: var(--transition);
+            gap: 0.5rem;
         }
-
-        .telegram-link:hover {
-            color: var(--text-primary);
+        
+        .card-title::before {
+            content: "🔍";
+            font-size: 1.3rem;
         }
-
-        /* Responsive Design */
+        
+        .card-text {
+            color: #4B5563;
+            line-height: 1.6;
+            font-size: 1.1rem;
+        }
+        
+        .card:nth-child(2) .card-title::before {
+            content: "📢";
+        }
+        
+        .card:nth-child(3) .card-title::before {
+            content: "💬";
+        }
+        
+        /* Пульсирующая анимация для привлечения внимания */
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+        
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+        
+        /* Адаптивность */
         @media (max-width: 768px) {
-            .bio-content {
-                grid-template-columns: 1fr;
+            .main-title {
+                font-size: 3rem;
+                text-align: center;
             }
             
-            .tabs-container {
-                flex-direction: column;
-                align-items: center;
+            .card {
+                padding: 1.5rem;
             }
             
-            .tab {
-                width: 100%;
-                max-width: 300px;
+            .card-title {
+                font-size: 1.3rem;
             }
+        }
+        
+        /* Дополнительные декоративные элементы */
+        .glow {
+            position: absolute;
+            width: 200px;
+            height: 200px;
+            background: radial-gradient(circle, rgba(135, 206, 235, 0.4) 0%, transparent 70%);
+            border-radius: 50%;
+            filter: blur(40px);
+            z-index: 1;
+        }
+        
+        .glow-1 {
+            top: 10%;
+            left: 10%;
+        }
+        
+        .glow-2 {
+            bottom: 10%;
+            right: 10%;
         }
     </style>
 </head>
 <body>
-    <header>
-        <div class="container">
-            <div class="logo">Linemap</div>
-            <p class="tagline">OSINT Specialist | Digital Intelligence</p>
-            <div class="nickname">@lnmof</div>
-        </div>
-    </header>
-
+    <!-- Анимированные снежинки -->
+    <div class="snowflakes" id="snowflakes"></div>
+    
+    <!-- Декоративные свечения -->
+    <div class="glow glow-1"></div>
+    <div class="glow glow-2"></div>
+    
     <div class="container">
-        <div class="tabs-container">
-            <button class="tab active" data-tab="price">Price</button>
-            <button class="tab" data-tab="bio">BIO</button>
-            <button class="tab" data-tab="project">Project</button>
-        </div>
-
-        <div id="price" class="tab-content active">
-            <h2>Услуги и цены</h2>
-            <p>Специализированные OSINT услуги для ваших нужд</p>
-            
-            <div class="pricing-cards">
-                <div class="pricing-card">
-                    <h3>Раскрытие личности</h3>
-                    <div class="price">$5+ <span>/ в зависимости от сложности</span></div>
-                    <ul class="features">
-                        <li>Идентификация личности по данным</li>
-                        <li>Анализ цифрового следа</li>
-                        <li>Подробности в DM</li>
-                    </ul>
-                    <a href="https://t.me/lnmof" class="btn">Заказать</a>
-                </div>
-                
-                <div class="pricing-card featured">
-                    <div class="featured-badge">Популярно</div>
-                    <h3>Персональное обучение OSINT</h3>
-                    <div class="price">$17</div>
-                    <ul class="features">
-                        <li>Индивидуальные занятия</li>
-                        <li>Практические методы</li>
-                        <li>Инструменты и ресурсы</li>
-                    </ul>
-                    <a href="https://t.me/lnmof" class="btn">Заказать</a>
-                </div>
-                
-                <div class="pricing-card">
-                    <h3>SW@T</h3>
-                    <div class="price">$15</div>
-                    <ul class="features">
-                        <li>Специализированная услуга</li>
-                        <li>Детали по запросу</li>
-                    </ul>
-                    <a href="https://t.me/lnmof" class="btn">Заказать</a>
-                </div>
-                
-                <div class="pricing-card">
-                    <h3>Защита (DEFF)</h3>
-                    <div class="price">$5 <span>/ месяц</span></div>
-                    <div class="price">$10 <span>/ полгода</span></div>
-                    <ul class="features">
-                        <li>Защита цифровой личности</li>
-                        <li>Консультации по безопасности</li>
-                    </ul>
-                    <a href="https://t.me/lnmof" class="btn">Заказать</a>
-                </div>
-                
-                <div class="pricing-card">
-                    <h3>Обучение анонимности</h3>
-                    <div class="price">$8</div>
-                    <ul class="features">
-                        <li>Методы сохранения анонимности</li>
-                        <li>Инструменты приватности</li>
-                    </ul>
-                    <a href="https://t.me/lnmof" class="btn">Заказать</a>
-                </div>
-                
-                <div class="pricing-card">
-                    <h3>Заказ на дом</h3>
-                    <div class="price">$6-11</div>
-                    <ul class="features">
-                        <li>Специфические запросы</li>
-                        <li>Детали обговариваются</li>
-                    </ul>
-                    <a href="https://t.me/lnmof" class="btn">Заказать</a>
-                </div>
-            </div>
-        </div>
-
-        <div id="bio" class="tab-content">
-            <h2>Обо мне</h2>
-            
-            <div class="bio-content">
-                <div class="profile">
-                    <div class="profile-img" style="height: 300px; background: linear-gradient(135deg, #333, #555); display: flex; align-items: center; justify-content: center; color: white; font-size: 5rem;">
-                        <i class="fas fa-user-secret"></i>
-                    </div>
-                </div>
-                
-                <div class="bio-text">
-                    <h3>OSINT Специалист</h3>
-                    <p>Специализируюсь на разведке открытых источников (OSINT) с фокусом на цифровую разведку и анализ данных.</p>
-                    
-                    <div class="aliases">
-                        <h4>Известные алиасы:</h4>
-                        <p>SHOOTER • Linemap</p>
-                    </div>
-                    
-                    <h3>Навыки</h3>
-                    <div class="skills">
-                        <span class="skill">OSINT</span>
-                        <span class="skill">HUMINT</span>
-                        <span class="skill">GEOINT</span>
-                        <span class="skill">SOCMINT</span>
-                        <span class="skill">IMINT</span>
-                        <span class="skill">Digital Forensics</span>
-                        <span class="skill">Data Analysis</span>
-                    </div>
-                    
-                    <h3>Опыт работы</h3>
-                    <p>Более 2 лет активной работы в Telegram-сообществе. Участвовал в различных проектах и исследованиях, связанных с цифровой разведкой и анализом открытых данных.</p>
-                </div>
-            </div>
-        </div>
-
-        <div id="project" class="tab-content">
-            <h2>Проекты</h2>
-            <p>Мои текущие и завершенные проекты</p>
-            
-            <div class="project-card">
-                <h3 class="project-title">Колесо Фортуны</h3>
-                <p class="project-description">
-                    Проект, который выбирает судьбу для провинившихся и предоставляет человеческую защиту от интернет-мусора. 
-                    Инновационный подход к модерации и защите онлайн-сообществ.
-                </p>
-                <a href="https://t.me/FortunessWheel" class="project-link" target="_blank">
-                    Перейти к проекту →
-                </a>
+        <h1 class="main-title">WEBTRACE</h1>
+        
+        <div class="cards-container">
+            <div class="card card-1 pulse">
+                <h2 class="card-title">@WebTraceSearchBot</h2>
+                <p class="card-text">Лучший инструмент для OSINT разведки, имеются куча доступных ключей и команд. Быстрый поиск по 50+ социальным сетям и платформам.</p>
             </div>
             
-            <div class="project-card">
-                <h3 class="project-title">OSINT База знаний</h3>
-                <p class="project-description">
-                    Собираю и систематизирую информацию по методам и инструментам OSINT. 
-                    Постоянно обновляемая база знаний для сообщества.
-                </p>
+            <div class="card card-2">
+                <h2 class="card-title">@WebTraceChannel</h2>
+                <p class="card-text">Телеграм канал где выпускаются обновления на бота. Новые функции, улучшения и эксклюзивные возможности первыми!</p>
+            </div>
+            
+            <div class="card card-3">
+                <h2 class="card-title">@WebTraceSupport</h2>
+                <p class="card-text">Поддержка которая ответит всегда. Помощь в настройке, ответы на вопросы и решение проблем 24/7.</p>
             </div>
         </div>
     </div>
 
-    <footer>
-        <div class="container">
-            <p>© 2023 Linemap | OSINT Specialist</p>
-            <div class="contact-info">
-                <p>Связь исключительно через Telegram:</p>
-                <a href="https://t.me/lnmof" class="telegram-link" target="_blank">
-                    @lnmof
-                </a>
-            </div>
-        </div>
-    </footer>
-
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const tabs = document.querySelectorAll('.tab');
-            const tabContents = document.querySelectorAll('.tab-content');
+        // Создание снежинок
+        function createSnowflakes() {
+            const snowflakesContainer = document.getElementById('snowflakes');
+            const snowflakeCount = 50;
             
-            tabs.forEach(tab => {
-                tab.addEventListener('click', () => {
-                    // Убираем активный класс у всех вкладок и контента
-                    tabs.forEach(t => t.classList.remove('active'));
-                    tabContents.forEach(content => content.classList.remove('active'));
-                    
-                    // Добавляем активный класс текущей вкладке
-                    tab.classList.add('active');
-                    
-                    // Показываем соответствующий контент
-                    const tabId = tab.getAttribute('data-tab');
-                    document.getElementById(tabId).classList.add('active');
-                });
-            });
+            for (let i = 0; i < snowflakeCount; i++) {
+                const snowflake = document.createElement('div');
+                snowflake.className = 'snowflake';
+                snowflake.innerHTML = '❄';
+                
+                // Случайные параметры
+                const size = Math.random() * 15 + 10;
+                const left = Math.random() * 100;
+                const animationDuration = Math.random() * 10 + 5;
+                const animationDelay = Math.random() * 5;
+                
+                snowflake.style.left = left + 'vw';
+                snowflake.style.fontSize = size + 'px';
+                snowflake.style.animationDuration = animationDuration + 's';
+                snowflake.style.animationDelay = animationDelay + 's';
+                
+                snowflakesContainer.appendChild(snowflake);
+            }
+        }
+        
+        // Запуск при загрузке
+        document.addEventListener('DOMContentLoaded', function() {
+            createSnowflakes();
+            
+            // Добавляем периодическую пульсацию для первой карточки
+            setInterval(() => {
+                const firstCard = document.querySelector('.card-1');
+                firstCard.classList.toggle('pulse');
+            }, 4000);
         });
     </script>
 </body>
