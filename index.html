@@ -116,8 +116,8 @@
             padding: 2rem;
             box-shadow: 0 8px 32px rgba(0, 100, 200, 0.3);
             border: 1px solid rgba(255, 255, 255, 0.2);
-            transform: translateY(0);
-            opacity: 1;
+            transform: translateY(-100px) scale(0.9);
+            opacity: 0;
             transition: all 0.4s ease;
             position: relative;
             overflow: hidden;
@@ -139,31 +139,35 @@
         }
         
         .card:hover {
-            transform: translateY(-5px);
+            transform: translateY(-5px) scale(1.02);
             box-shadow: 0 15px 40px rgba(0, 100, 200, 0.4);
             background: rgba(255, 255, 255, 0.15);
         }
         
         .card-1 {
-            animation: fadeIn 0.8s ease-out 1s forwards;
+            animation: cardSlideDown 0.8s ease-out 1s forwards;
         }
         
         .card-2 {
-            animation: fadeIn 0.8s ease-out 1.3s forwards;
+            animation: cardSlideDown 0.8s ease-out 1.2s forwards;
         }
         
         .card-3 {
-            animation: fadeIn 0.8s ease-out 1.6s forwards;
+            animation: cardSlideDown 0.8s ease-out 1.4s forwards;
         }
         
-        @keyframes fadeIn {
-            from {
+        @keyframes cardSlideDown {
+            0% {
+                transform: translateY(-100px) scale(0.9);
                 opacity: 0;
-                transform: translateY(20px);
             }
-            to {
+            70% {
+                transform: translateY(10px) scale(1.02);
+                opacity: 0.8;
+            }
+            100% {
+                transform: translateY(0) scale(1);
                 opacity: 1;
-                transform: translateY(0);
             }
         }
         
@@ -198,22 +202,6 @@
         
         .card:nth-child(3) .card-title::before {
             background: #BEE3F8;
-        }
-        
-        /* Пульсирующая анимация */
-        @keyframes pulse {
-            0%, 100% { 
-                transform: translateY(0) scale(1);
-                box-shadow: 0 8px 32px rgba(0, 100, 200, 0.3);
-            }
-            50% { 
-                transform: translateY(-3px) scale(1.02);
-                box-shadow: 0 12px 40px rgba(0, 150, 255, 0.5);
-            }
-        }
-        
-        .pulse {
-            animation: pulse 3s infinite ease-in-out;
         }
         
         /* Адаптивность */
@@ -313,7 +301,7 @@
         <h1 class="main-title">WEBTRACE</h1>
         
         <div class="cards-container">
-            <div class="card card-1 pulse">
+            <div class="card card-1">
                 <h2 class="card-title">@WebTraceSearchBot</h2>
                 <p class="card-text">Лучший инструмент для OSINT разведки, имеются куча доступных ключей и команд. Быстрый поиск по 50+ социальным сетям и платформам.</p>
             </div>
@@ -388,12 +376,6 @@
         document.addEventListener('DOMContentLoaded', function() {
             createSnowflakes();
             createParticles();
-            
-            // Периодическая пульсация для первой карточки
-            setInterval(() => {
-                const firstCard = document.querySelector('.card-1');
-                firstCard.classList.toggle('pulse');
-            }, 3000);
         });
     </script>
 </body>
