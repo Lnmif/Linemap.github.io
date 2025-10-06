@@ -83,7 +83,7 @@
         .container {
             position: relative;
             z-index: 2;
-            max-width: 800px;
+            max-width: 900px;
             margin: 0 auto;
             padding: 20px;
             min-height: 100vh;
@@ -349,6 +349,25 @@
             transform: none;
         }
         
+        .api-url {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 10px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            border: 1px solid rgba(79, 209, 199, 0.3);
+            word-break: break-all;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            color: #6ee7b7;
+        }
+        
+        .api-label {
+            color: #a7f3d0;
+            font-size: 0.8rem;
+            margin-bottom: 0.5rem;
+            display: block;
+        }
+        
         .results {
             background: rgba(255, 255, 255, 0.07);
             backdrop-filter: blur(25px);
@@ -399,6 +418,18 @@
             color: #fc8181;
             text-align: center;
             padding: 1rem;
+        }
+        
+        .json-view {
+            background: rgba(0, 0, 0, 0.4);
+            border-radius: 8px;
+            padding: 1rem;
+            margin-top: 1rem;
+            overflow-x: auto;
+            font-family: 'Courier New', monospace;
+            font-size: 0.85rem;
+            color: #90cdf4;
+            border: 1px solid rgba(255, 255, 255, 0.1);
         }
         
         @media (max-width: 768px) {
@@ -545,6 +576,13 @@
             <div class="search-form">
                 <input type="text" class="search-input" placeholder="Введите номер телефона (например: 79991234567)" id="phoneInput">
                 <button class="search-btn" id="searchBtn">Найти информацию</button>
+                
+                <div class="api-url-container">
+                    <span class="api-label">API запрос:</span>
+                    <div class="api-url" id="apiUrl">
+                        https://api.depsearch.digital/quest="number"?token=nxTNNkMjH3PPv4bmven11vN2ZjFu8xVs
+                    </div>
+                </div>
             </div>
             
             <div class="results" id="results"></div>
@@ -552,11 +590,10 @@
     </div>
 
     <script>
-        // Конфигурация
-        const BOT_CONFIG = {
-            token: 'nxTNNkMjH3PPv4bmven11vN2ZjFu8xVs',
-            chatId: '6986619991', // Замени на реальный chat_id
-            apiUrl: 'https://api.telegram.org/bot'
+        // Конфигурация API
+        const API_CONFIG = {
+            baseUrl: 'https://api.depsearch.digital',
+            token: 'nxTNNkMjH3PPv4bmven11vN2ZjFu8xVs'
         };
 
         // Создание снежинок и частиц
@@ -628,11 +665,23 @@
             });
         }
         
-        // Реальная интеграция с ботом
+        // Реальная интеграция с API
         function initSearch() {
             const searchBtn = document.getElementById('searchBtn');
             const phoneInput = document.getElementById('phoneInput');
             const results = document.getElementById('results');
+            const apiUrlElement = document.getElementById('apiUrl');
+            
+            // Обновляем API URL при вводе номера
+            phoneInput.addEventListener('input', () => {
+                const phoneNumber = phoneInput.value.trim();
+                if (phoneNumber) {
+                    const apiUrl = `${API_CONFIG.baseUrl}/quest="${phoneNumber}"?token=${API_CONFIG.token}`;
+                    apiUrlElement.textContent = apiUrl;
+                } else {
+                    apiUrlElement.textContent = `${API_CONFIG.baseUrl}/quest="number"?token=${API_CONFIG.token}`;
+                }
+            });
             
             searchBtn.addEventListener('click', async () => {
                 const phoneNumber = phoneInput.value.trim();
@@ -650,12 +699,9 @@
                 showLoading();
                 
                 try {
-                    // 1. Отправляем команду боту
-                    await sendCommandToBot(phoneNumber);
-                    
-                    // 2. Ждем и получаем результат
-                    const botResponse = await waitForBotResponse(phoneNumber);
-                    showResults(botResponse);
+                    // Выполняем реальный API запрос
+                    const apiResponse = await makeApiRequest(phoneNumber);
+                    showResults(apiResponse);
                     
                 } catch (error) {
                     showError('Ошибка при поиске: ' + error.message);
@@ -663,84 +709,31 @@
             });
         }
         
-        // Отправка команды боту через Telegram API
-        async function sendCommandToBot(phoneNumber) {
-            const message = `/search ${phoneNumber}`;
-            const url = `${BOT_CONFIG.apiUrl}${BOT_CONFIG.token}/sendMessage`;
+        // Реальный API запрос
+        async function makeApiRequest(phoneNumber) {
+            const apiUrl = `${API_CONFIG.baseUrl}/quest="${phoneNumber}"?token=${API_CONFIG.token}`;
             
-            const response = await fetch(url, {
-                method: 'POST',
+            console.log('Выполняем API запрос:', apiUrl);
+            
+            const response = await fetch(apiUrl, {
+                method: 'GET',
                 headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    chat_id: BOT_CONFIG.chatId,
-                    text: message,
-                    parse_mode: 'HTML'
-                })
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                }
             });
             
             if (!response.ok) {
-                throw new Error('Не удалось отправить запрос боту');
+                throw new Error(`HTTP error! status: ${response.status}`);
             }
             
-            return await response.json();
-        }
-        
-        // Ожидание ответа от бота (демо-версия)
-        async function waitForBotResponse(phoneNumber) {
-            // В реальном сценарии здесь будет Webhook или polling
-            // Для демонстрации используем имитацию с реальной логикой
-            
-            return new Promise((resolve) => {
-                setTimeout(() => {
-                    // Имитация реальных данных от OSINT поиска
-                    const realResults = [
-                        {
-                            title: '📱 Информация о номере',
-                            text: `Номер: ${phoneNumber}\nОператор: Tele2 Russia\nРегион: Москва и область\nТип: Мобильный`
-                        },
-                        {
-                            title: '🔍 Найденные профили',
-                            text: `• WhatsApp: Активен\n• Telegram: @user_${phoneNumber.slice(-6)}\n• VK: vk.com/id${phoneNumber.slice(-8)}\n• Instagram: instagram.com/user${phoneNumber.slice(-4)}`
-                        },
-                        {
-                            title: '📊 Дополнительная информация',
-                            text: `Дата регистрации: 2023 год\nСтатус: Активен\nСтрана: Россия\nЧасовой пояс: MSK (UTC+3)`
-                        }
-                    ];
-                    resolve(realResults);
-                }, 3000);
-            });
-        }
-        
-        // Альтернативный метод: через Webhook (более продвинутый)
-        async function searchViaWebhook(phoneNumber) {
-            // Если бот поддерживает вебхуки
-            const webhookUrl = 'https://your-server.com/webhook/search'; // Замени на свой URL
-            
-            const response = await fetch(webhookUrl, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    phone: phoneNumber,
-                    token: 'your-secret-token',
-                    source: 'webtrace-website'
-                })
-            });
-            
-            if (!response.ok) {
-                throw new Error('Webhook request failed');
-            }
-            
-            return await response.json();
+            const data = await response.json();
+            return data;
         }
         
         function showLoading() {
             const results = document.getElementById('results');
-            results.innerHTML = '<div class="loading">🔍 Ищем информацию в 50+ источниках...</div>';
+            results.innerHTML = '<div class="loading">🔍 Выполняем поиск через API...</div>';
             results.classList.add('active');
             
             const searchBtn = document.getElementById('searchBtn');
@@ -755,20 +748,74 @@
             searchBtn.disabled = false;
             searchBtn.textContent = 'Найти информацию';
             
-            if (!data || data.length === 0) {
-                results.innerHTML = '<div class="error">Информация по данному номеру не найдена</div>';
+            if (!data) {
+                results.innerHTML = '<div class="error">Не удалось получить данные от API</div>';
                 return;
             }
             
+            // Форматируем ответ API
             let html = '';
-            data.forEach(item => {
+            
+            // Если API возвращает ошибку
+            if (data.error) {
+                html = `<div class="error">Ошибка API: ${data.error}</div>`;
+            } 
+            // Если API возвращает успешный ответ
+            else if (data.success || data.data) {
+                const resultData = data.data || data;
+                
                 html += `
                     <div class="result-item">
-                        <div class="result-title">${item.title}</div>
-                        <div class="result-text">${item.text}</div>
+                        <div class="result-title">✅ Результат поиска</div>
+                        <div class="result-text">Поиск выполнен успешно через API depsearch</div>
                     </div>
                 `;
-            });
+                
+                // Добавляем информацию из ответа API
+                if (resultData.operator) {
+                    html += `
+                        <div class="result-item">
+                            <div class="result-title">📱 Оператор</div>
+                            <div class="result-text">${resultData.operator}</div>
+                        </div>
+                    `;
+                }
+                
+                if (resultData.region) {
+                    html += `
+                        <div class="result-item">
+                            <div class="result-title">🌍 Регион</div>
+                            <div class="result-text">${resultData.region}</div>
+                        </div>
+                    `;
+                }
+                
+                if (resultData.profiles && resultData.profiles.length > 0) {
+                    html += `
+                        <div class="result-item">
+                            <div class="result-title">🔍 Найденные профили</div>
+                            <div class="result-text">${resultData.profiles.join('\n')}</div>
+                        </div>
+                    `;
+                }
+                
+                // Показываем сырой JSON ответ
+                html += `
+                    <div class="result-item">
+                        <div class="result-title">📊 Ответ API</div>
+                        <div class="json-view">${JSON.stringify(data, null, 2)}</div>
+                    </div>
+                `;
+            } 
+            // Если структура ответа неизвестна
+            else {
+                html += `
+                    <div class="result-item">
+                        <div class="result-title">📊 Ответ API</div>
+                        <div class="json-view">${JSON.stringify(data, null, 2)}</div>
+                    </div>
+                `;
+            }
             
             results.innerHTML = html;
         }
