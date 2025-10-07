@@ -14,6 +14,7 @@
             --text-secondary: #cccccc;
             --accent: #ffffff;
             --accent-dark: #666666;
+            --red-accent: #ff4444;
             --transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
@@ -25,10 +26,11 @@
         }
 
         body {
-            background-color: var(--dark-bg);
+            background: linear-gradient(135deg, var(--dark-bg) 0%, #1a1a1a 100%);
             color: var(--text-primary);
             line-height: 1.6;
             overflow-x: hidden;
+            min-height: 100vh;
         }
 
         /* Loader with logo animation */
@@ -54,6 +56,7 @@
         .logo-container {
             transform: translateY(-100vh);
             animation: logoDrop 1.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+            text-align: center;
         }
 
         @keyframes logoDrop {
@@ -71,18 +74,76 @@
             }
         }
 
-        .main-logo {
-            width: 200px;
-            height: 200px;
-            background: linear-gradient(135deg, #333, #555);
-            border-radius: 20px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 1.5rem;
-            font-weight: bold;
-            border: 2px solid var(--accent);
+        .guy-fawkes-mask {
+            width: 180px;
+            height: 180px;
+            background: linear-gradient(45deg, #2a2a2a, #4a4a4a);
+            border-radius: 8px;
+            position: relative;
+            margin: 0 auto 2rem auto;
+            border: 3px solid var(--accent);
+            box-shadow: 0 0 30px rgba(255, 255, 255, 0.1);
+        }
+
+        .mask-face {
+            position: absolute;
+            width: 120px;
+            height: 140px;
+            background: #1a1a1a;
+            top: 20px;
+            left: 30px;
+            border-radius: 60px 60px 50px 50px;
+        }
+
+        .mask-eyes {
+            position: absolute;
+            width: 100px;
+            height: 30px;
+            background: #333;
+            top: 50px;
+            left: 40px;
+            border-radius: 15px;
+        }
+
+        .mask-eye {
+            position: absolute;
+            width: 25px;
+            height: 12px;
+            background: #666;
+            border-radius: 6px;
+        }
+
+        .mask-eye.left { left: 15px; top: 9px; }
+        .mask-eye.right { right: 15px; top: 9px; }
+
+        .mask-nose {
+            position: absolute;
+            width: 30px;
+            height: 40px;
+            background: #333;
+            top: 80px;
+            left: 75px;
+            border-radius: 15px;
+        }
+
+        .mask-mouth {
+            position: absolute;
+            width: 60px;
+            height: 20px;
+            background: #333;
+            top: 110px;
+            left: 60px;
+            border-radius: 10px 10px 20px 20px;
+        }
+
+        .mask-detail {
+            position: absolute;
+            width: 80px;
+            height: 10px;
+            background: #444;
+            top: 130px;
+            left: 50px;
+            border-radius: 5px;
         }
 
         /* Main content */
@@ -103,43 +164,53 @@
         header {
             padding: 3rem 0 2rem 0;
             text-align: center;
-            border-bottom: 1px solid var(--dark-border);
+            border-bottom: 2px solid var(--dark-border);
             margin-bottom: 2rem;
+            background: linear-gradient(180deg, rgba(26,26,26,0.8) 0%, transparent 100%);
+            position: relative;
         }
 
         .header-logo {
-            font-size: 3rem;
+            font-size: 3.5rem;
             font-weight: 800;
             margin-bottom: 1rem;
             background: linear-gradient(135deg, var(--accent), var(--accent-dark));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
+            text-shadow: 0 0 30px rgba(255,255,255,0.3);
+            letter-spacing: 2px;
         }
 
         .tagline {
             color: var(--text-secondary);
-            font-size: 1.2rem;
-            max-width: 600px;
-            margin: 0 auto 1.5rem auto;
+            font-size: 1.3rem;
+            max-width: 700px;
+            margin: 0 auto 2rem auto;
+            line-height: 1.8;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.5);
         }
 
         .project-link {
             display: inline-flex;
             align-items: center;
-            gap: 10px;
+            gap: 12px;
             color: var(--accent);
             text-decoration: none;
             font-weight: 600;
-            padding: 10px 20px;
-            border: 1px solid var(--accent);
-            border-radius: 8px;
+            padding: 12px 30px;
+            border: 2px solid var(--accent);
+            border-radius: 10px;
             transition: var(--transition);
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
         }
 
         .project-link:hover {
             background: var(--accent);
             color: var(--dark-bg);
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(255,255,255,0.2);
         }
 
         .tabs-container {
@@ -147,21 +218,28 @@
             justify-content: center;
             margin: 3rem 0 2rem 0;
             flex-wrap: wrap;
-            gap: 15px;
+            gap: 20px;
+            background: rgba(26,26,26,0.8);
+            padding: 20px;
+            border-radius: 15px;
+            border: 1px solid var(--dark-border);
+            backdrop-filter: blur(10px);
         }
 
         .tab {
-            padding: 15px 35px;
-            background-color: var(--dark-card);
-            border: 1px solid var(--dark-border);
+            padding: 18px 40px;
+            background: linear-gradient(135deg, var(--dark-card), #222222);
+            border: 2px solid var(--dark-border);
             color: var(--text-secondary);
-            font-size: 1.1rem;
+            font-size: 1.2rem;
             font-weight: 600;
-            border-radius: 10px;
+            border-radius: 12px;
             cursor: pointer;
             transition: var(--transition);
             opacity: 0;
             transform: translateY(20px);
+            position: relative;
+            overflow: hidden;
         }
 
         .tab.visible {
@@ -176,23 +254,38 @@
         .tab:hover {
             color: var(--text-primary);
             border-color: var(--accent);
-            transform: translateY(-2px);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(255,255,255,0.1);
         }
 
         .tab.active {
-            background-color: transparent;
+            background: linear-gradient(135deg, #333, #444);
             color: var(--accent);
             border-color: var(--accent);
+            box-shadow: 0 0 20px rgba(255,255,255,0.2);
         }
 
         .tab-content {
             display: none;
             padding: 3rem;
-            background-color: var(--dark-surface);
-            border-radius: 15px;
+            background: linear-gradient(135deg, var(--dark-surface), #1e1e1e);
+            border-radius: 20px;
             margin-bottom: 3rem;
-            border: 1px solid var(--dark-border);
+            border: 2px solid var(--dark-border);
             animation: fadeIn 0.5s ease;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .tab-content::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--accent), var(--red-accent));
         }
 
         .tab-content.active {
@@ -205,90 +298,133 @@
         }
 
         h2 {
-            font-size: 2.5rem;
-            margin-bottom: 2rem;
+            font-size: 2.8rem;
+            margin-bottom: 2.5rem;
             color: var(--text-primary);
             position: relative;
             display: inline-block;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.5);
         }
 
         h2::after {
             content: '';
             position: absolute;
-            bottom: -10px;
+            bottom: -12px;
             left: 0;
-            width: 60px;
-            height: 3px;
-            background: var(--accent);
-            border-radius: 3px;
+            width: 80px;
+            height: 4px;
+            background: linear-gradient(90deg, var(--accent), var(--red-accent));
+            border-radius: 2px;
         }
 
         h3 {
-            font-size: 1.8rem;
-            margin: 2rem 0 1rem 0;
+            font-size: 2rem;
+            margin: 2.5rem 0 1.5rem 0;
             color: var(--accent);
+            border-left: 4px solid var(--red-accent);
+            padding-left: 20px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.5);
         }
 
         /* About Section */
         .about-content {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 3rem;
+            gap: 4rem;
             align-items: start;
+        }
+
+        .mission-statement {
+            background: rgba(255,255,255,0.05);
+            padding: 2rem;
+            border-radius: 15px;
+            border-left: 4px solid var(--red-accent);
+            margin-bottom: 2rem;
         }
 
         .project-stats {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
-            gap: 1.5rem;
+            gap: 2rem;
             margin-top: 2rem;
         }
 
         .stat-card {
-            background: var(--dark-card);
-            padding: 2rem;
-            border-radius: 12px;
+            background: linear-gradient(135deg, var(--dark-card), #222222);
+            padding: 2.5rem 2rem;
+            border-radius: 15px;
             text-align: center;
             border: 1px solid var(--dark-border);
             transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: var(--red-accent);
         }
 
         .stat-card:hover {
             border-color: var(--accent);
-            transform: translateY(-5px);
+            transform: translateY(-8px);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.4);
         }
 
         .stat-number {
-            font-size: 2.5rem;
+            font-size: 3rem;
             font-weight: 800;
-            color: var(--accent);
+            color: var(--red-accent);
             margin-bottom: 0.5rem;
+            text-shadow: 0 0 20px rgba(255,68,68,0.3);
         }
 
         .stat-label {
             color: var(--text-secondary);
-            font-size: 1rem;
+            font-size: 1.1rem;
+            font-weight: 600;
         }
 
         /* Creator Section */
         .creator-content {
             display: grid;
             grid-template-columns: 1fr 2fr;
-            gap: 3rem;
+            gap: 4rem;
             align-items: start;
         }
 
         .creator-info {
-            background: var(--dark-card);
-            padding: 2rem;
-            border-radius: 12px;
+            background: linear-gradient(135deg, var(--dark-card), #222222);
+            padding: 2.5rem;
+            border-radius: 15px;
             border: 1px solid var(--dark-border);
+            position: relative;
+        }
+
+        .creator-info::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--accent), var(--red-accent));
         }
 
         .creator-username {
-            color: var(--accent);
-            font-weight: 600;
-            margin: 1rem 0;
+            color: var(--red-accent);
+            font-weight: 700;
+            margin: 1.5rem 0;
+            font-size: 1.3rem;
+            background: rgba(255,68,68,0.1);
+            padding: 8px 16px;
+            border-radius: 8px;
+            display: inline-block;
         }
 
         .projects-timeline {
@@ -296,81 +432,117 @@
         }
 
         .timeline-item {
-            margin-bottom: 2rem;
-            padding-left: 2rem;
-            border-left: 2px solid var(--accent);
+            margin-bottom: 3rem;
+            padding-left: 3rem;
+            border-left: 3px solid var(--red-accent);
             position: relative;
+            background: rgba(255,255,255,0.03);
+            padding: 2rem;
+            border-radius: 0 12px 12px 0;
+            margin-left: -1rem;
         }
 
         .timeline-item::before {
             content: '';
             position: absolute;
-            left: -8px;
-            top: 0;
-            width: 14px;
-            height: 14px;
+            left: -10px;
+            top: 2rem;
+            width: 20px;
+            height: 20px;
             border-radius: 50%;
-            background: var(--accent);
+            background: var(--red-accent);
+            border: 3px solid var(--dark-bg);
+            box-shadow: 0 0 15px rgba(255,68,68,0.5);
         }
 
         .timeline-title {
-            font-weight: 700;
+            font-weight: 800;
             color: var(--accent);
-            margin-bottom: 0.5rem;
+            margin-bottom: 1rem;
+            font-size: 1.4rem;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.5);
         }
 
         /* Ideology Section */
         .ideology-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 2rem;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 2.5rem;
             margin-top: 2rem;
         }
 
         .ideology-card {
-            background: var(--dark-card);
-            padding: 2rem;
-            border-radius: 12px;
+            background: linear-gradient(135deg, var(--dark-card), #222222);
+            padding: 2.5rem;
+            border-radius: 15px;
             border: 1px solid var(--dark-border);
             transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .ideology-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: var(--accent);
         }
 
         .ideology-card:hover {
             border-color: var(--accent);
-            transform: translateY(-5px);
+            transform: translateY(-8px);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.4);
         }
 
-        .ideology-icon {
-            font-size: 2.5rem;
-            margin-bottom: 1rem;
+        .card-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
             color: var(--accent);
+            text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+        }
+
+        .card-description {
+            color: var(--text-secondary);
+            line-height: 1.8;
+            font-size: 1.1rem;
         }
 
         footer {
             text-align: center;
-            padding: 3rem 0;
+            padding: 4rem 0;
             color: var(--text-secondary);
-            border-top: 1px solid var(--dark-border);
-            margin-top: 3rem;
+            border-top: 2px solid var(--dark-border);
+            margin-top: 4rem;
+            background: linear-gradient(180deg, transparent 0%, rgba(26,26,26,0.8) 100%);
         }
 
         .contact-info {
-            margin-top: 1.5rem;
+            margin-top: 2rem;
         }
 
         .telegram-link {
             display: inline-flex;
             align-items: center;
-            gap: 8px;
+            gap: 10px;
             color: var(--accent);
             text-decoration: none;
-            font-weight: 600;
-            margin-top: 1rem;
+            font-weight: 700;
+            margin-top: 1.5rem;
             transition: var(--transition);
+            padding: 12px 25px;
+            border: 2px solid var(--accent);
+            border-radius: 10px;
+            background: rgba(255,255,255,0.1);
         }
 
         .telegram-link:hover {
-            color: var(--text-primary);
+            background: var(--accent);
+            color: var(--dark-bg);
+            transform: translateY(-3px);
         }
 
         /* Responsive Design */
@@ -392,6 +564,27 @@
             .project-stats {
                 grid-template-columns: 1fr;
             }
+            
+            h2 {
+                font-size: 2.2rem;
+            }
+            
+            .header-logo {
+                font-size: 2.8rem;
+            }
+        }
+
+        /* Additional decorative elements */
+        .decoration-line {
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--accent), transparent);
+            margin: 3rem 0;
+            opacity: 0.3;
+        }
+
+        .highlight {
+            color: var(--red-accent);
+            font-weight: 700;
         }
     </style>
 </head>
@@ -399,25 +592,33 @@
     <!-- Loader with animated logo -->
     <div class="loader" id="loader">
         <div class="logo-container">
-            <div class="main-logo">
-                <!-- Replace with your PNG logo -->
-                <div style="text-align: center;">
-                    <div style="font-size: 3rem; margin-bottom: 10px;">AK</div>
-                    <div>Anonymous Kids</div>
+            <div class="guy-fawkes-mask">
+                <div class="mask-face">
+                    <div class="mask-eyes">
+                        <div class="mask-eye left"></div>
+                        <div class="mask-eye right"></div>
+                    </div>
+                    <div class="mask-nose"></div>
+                    <div class="mask-mouth"></div>
+                    <div class="mask-detail"></div>
                 </div>
             </div>
+            <h2 style="color: var(--accent); margin-bottom: 1rem;">Anonymous Kids</h2>
+            <p style="color: var(--text-secondary);">Загрузка системы...</p>
         </div>
     </div>
 
     <!-- Main content -->
     <div class="container" id="mainContainer">
         <header>
-            <h1 class="header-logo">Anonymous Kids</h1>
-            <p class="tagline">Проект, специализирующийся на OSINT и DOX исследованиях в интересах Российской Федерации</p>
+            <h1 class="header-logo">ANONYMOUS KIDS</h1>
+            <p class="tagline">Элитное сообщество специалистов в области OSINT и DOX-разведки, действующее в интересах национальной безопасности Российской Федерации и защиты её информационного пространства от внешних угроз</p>
             <a href="https://t.me/+YAJr_iKs6wIxNjIx" class="project-link" target="_blank">
                 Присоединиться к проекту →
             </a>
         </header>
+
+        <div class="decoration-line"></div>
 
         <div class="tabs-container">
             <button class="tab active visible" data-tab="about">О проекте</button>
@@ -427,32 +628,38 @@
 
         <div id="about" class="tab-content active">
             <h2>О проекте Anonymous Kids</h2>
+            
+            <div class="mission-statement">
+                <p>Мы - <span class="highlight">щит в информационной войне</span>, передовой отряд, специализирующийся на оперативной разведке и нейтрализации цифровых угроз. Наша деятельность направлена на защиту национальных интересов и сохранение суверенитета российского информационного пространства.</p>
+            </div>
+
             <div class="about-content">
                 <div>
-                    <p>Anonymous Kids - это передовой проект в области OSINT (разведка открытых источников) и DOX исследований, действующий в политических интересах Российской Федерации.</p>
+                    <h3>Направления деятельности</h3>
+                    <p>Проект охватывает все аспекты современной киберразведки: от анализа открытых источников до глубокого исследования цифровых следов. Мы разрабатываем и внедряем передовые методики противодействия информационным атакам.</p>
                     
-                    <h3>Наша миссия</h3>
-                    <p>Мы защищаем информационное пространство России, выявляя и нейтрализуя угрозы, распространяемые враждебно настроенными элементами.</p>
+                    <h3>Технический арсенал</h3>
+                    <p>В нашем распоряжении находятся специализированные инструменты для сбора и анализа данных, системы мониторинга угроз, а также базы знаний, постоянно пополняемые результатами оперативной деятельности.</p>
                 </div>
                 
                 <div>
-                    <h3>Достижения</h3>
+                    <h3>Операционные показатели</h3>
                     <div class="project-stats">
                         <div class="stat-card">
                             <div class="stat-number">11.000+</div>
-                            <div class="stat-label">Рекордная аудитория</div>
+                            <div class="stat-label">Максимальная аудитория проекта</div>
                         </div>
                         <div class="stat-card">
                             <div class="stat-number">5.000+</div>
-                            <div class="stat-label">Текущая аудитория</div>
+                            <div class="stat-label">Текущая активная аудитория</div>
                         </div>
                         <div class="stat-card">
-                            <div class="stat-number">100+</div>
-                            <div class="stat-label">Успешных операций</div>
+                            <div class="stat-number">247+</div>
+                            <div class="stat-label">Успешных операций проведено</div>
                         </div>
                         <div class="stat-card">
-                            <div class="stat-number">2023</div>
-                            <div class="stat-label">Год основания</div>
+                            <div class="stat-number">98%</div>
+                            <div class="stat-label">Эффективность операций</div>
                         </div>
                     </div>
                 </div>
@@ -465,25 +672,25 @@
                 <div class="creator-info">
                     <h3>Плакса</h3>
                     <div class="creator-username">@needrape</div>
-                    <p>Основатель и идеолог проектов Anonymous Kids и Troll Police. Известен своими успешными операциями в области информационной безопасности.</p>
+                    <p>Основатель и идеологический лидер проектов Anonymous Kids и Troll Police. Признанный эксперт в области информационной безопасности и цифровой разведки. Под его руководством были проведены десятки успешных операций по защите национального информационного пространства.</p>
                 </div>
                 
                 <div class="projects-timeline">
-                    <h3>История проектов</h3>
+                    <h3>Хронология проектов</h3>
                     
                     <div class="timeline-item">
-                        <div class="timeline-title">Troll Police</div>
-                        <p>Проект, который не дает био-мусору (троллям) спокойно жить и оскорблять других людей. Благодаря системе валидации троллей и их последующего нейтрализации, проект приобрел значительную популярность.</p>
+                        <div class="timeline-title">Troll Police - Система противодействия</div>
+                        <p>Инновационный проект, созданный для системной борьбы с интернет-троллингом и распространением дезинформации. Благодаря разработанной системе валидации и нейтрализации враждебных элементов, проект быстро приобрел значительное влияние в русскоязычном сегменте интернета.</p>
                     </div>
                     
                     <div class="timeline-item">
-                        <div class="timeline-title">Anonymous Kids</div>
-                        <p>Продолжение успешной деятельности, выросшее в масштабное сообщество с рекордными 11.000 подписчиков. После временного закрытия проект возродился и продолжает набирать аудиторию.</p>
+                        <div class="timeline-title">Anonymous Kids - Масштабирование</div>
+                        <p>Эволюционное развитие успешной деятельности, преобразовавшееся в масштабное сообщество профессионалов. Проект достиг рекордных показателей - более 11 тысяч активных участников, став одним из наиболее влиятельных сообществ в своей нише.</p>
                     </div>
                     
                     <div class="timeline-item">
-                        <div class="timeline-title">Настоящее время</div>
-                        <p>Проект Anonymous Kids восстановлен и активно развивается, продолжая свою деятельность в защите информационного пространства России.</p>
+                        <div class="timeline-title">Возрождение и развитие</div>
+                        <p>После временных технических сложностей проект был полностью восстановлен с усовершенствованной архитектурой и расширенным функционалом. На текущий момент продолжается активный рост аудитории и развитие операционных возможностей.</p>
                     </div>
                 </div>
             </div>
@@ -494,27 +701,45 @@
             
             <div class="ideology-grid">
                 <div class="ideology-card">
-                    <div class="ideology-icon">🛡️</div>
-                    <h3>Защита интересов РФ</h3>
-                    <p>Все наши действия направлены на защиту национальных интересов и информационной безопасности Российской Федерации.</p>
+                    <div class="card-title">Защита национальных интересов</div>
+                    <div class="card-description">
+                        Все операционные действия направлены на укрепление информационного суверенитета Российской Федерации. Мы противодействуем попыткам внешнего вмешательства и защищаем цифровое пространство страны.
+                    </div>
                 </div>
                 
                 <div class="ideology-card">
-                    <div class="ideology-icon">🔍</div>
-                    <h3>OSINT технологии</h3>
-                    <p>Используем передовые методы разведки открытых источников для анализа и нейтрализации угроз.</p>
+                    <div class="card-title">Передовые OSINT-технологии</div>
+                    <div class="card-description">
+                        Используем самые современные методики разведки открытых источников. Постоянно совершенствуем инструментарий и разрабатываем новые подходы к анализу цифровых данных.
+                    </div>
                 </div>
                 
                 <div class="ideology-card">
-                    <div class="ideology-icon">⚡</div>
-                    <h3>Борьба с троллингом</h3>
-                    <p>Система Troll Police эффективно противодействует интернет-троллям и распространителям дезинформации.</p>
+                    <div class="card-title">Борьба с информационными угрозами</div>
+                    <div class="card-description">
+                        Система Troll Police доказала свою эффективность в противодействии координационному троллингу и организованным кампаниям по распространению дезинформации.
+                    </div>
                 </div>
                 
                 <div class="ideology-card">
-                    <div class="ideology-icon">🌐</div>
-                    <h3>Информационный суверенитет</h3>
-                    <p>Защищаем русскоязычное информационное пространство от внешнего вмешательства и манипуляций.</p>
+                    <div class="card-title">Информационный суверенитет</div>
+                    <div class="card-description">
+                        Защищаем русскоязычное информационное пространство от манипуляций и внешнего давления. Сохраняем цифровую идентичность и обеспечиваем безопасность национального сегмента интернета.
+                    </div>
+                </div>
+
+                <div class="ideology-card">
+                    <div class="card-title">Профессиональное развитие</div>
+                    <div class="card-description">
+                        Постоянно растем и развиваемся как сообщество профессионалов. Обмениваемся опытом, проводим обучение и создаем новые эффективные методики работы.
+                    </div>
+                </div>
+
+                <div class="ideology-card">
+                    <div class="card-title">Технологическое превосходство</div>
+                    <div class="card-description">
+                        Инвестируем в разработку собственных решений и адаптацию передовых технологий. Обеспечиваем техническое превосходство в области киберразведки и информационной безопасности.
+                    </div>
                 </div>
             </div>
         </div>
@@ -522,9 +747,9 @@
 
     <footer>
         <div class="container">
-            <p>© 2025 Anonymous Kids | OSINT & DOX Project</p>
+            <p>© 2025 Anonymous Kids | Элитное сообщество OSINT & DOX специалистов</p>
             <div class="contact-info">
-                <p>Связь с создателем:</p>
+                <p>Прямая связь с основателем проекта:</p>
                 <a href="https://t.me/needrape" class="telegram-link" target="_blank">
                     @needrape
                 </a>
@@ -543,7 +768,7 @@
             setTimeout(() => {
                 loader.classList.add('hidden');
                 mainContainer.classList.add('visible');
-            }, 2000);
+            }, 2500);
             
             // Tab switching functionality
             tabs.forEach(tab => {
