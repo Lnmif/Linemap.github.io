@@ -3,179 +3,158 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>For my girl ❤️</title>
+    <title>Birthday Quest ✨</title>
     <style>
-        :root {
-            --accent: #ff4d6d;
-            --secondary: #ff758f;
-            --dark: #2b2d42;
-        }
+        :root { --soft-pink: #ffdae0; --deep-pink: #ff85a1; --text: #5d4a4a; }
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        body, html { margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden; background: #fffafa; font-family: 'Arial', sans-serif; color: var(--text); }
 
-        body, html {
-            margin: 0;
-            padding: 0;
-            width: 100%;
-            height: 100%;
-            overflow: hidden;
-            background: #fff0f3; /* Нежно-розовый фон */
-            font-family: 'Montserrat', sans-serif;
-        }
+        /* Фон: размытые плавающие сердца */
+        .bg { position: fixed; inset: 0; z-index: 1; pointer-events: none; }
+        .blur-heart { position: absolute; color: var(--soft-pink); filter: blur(15px); opacity: 0.6; animation: floatDown linear infinite; }
+        @keyframes floatDown { from { transform: translateY(-10vh) scale(0.5); } to { transform: translateY(110vh) scale(1.5); } }
 
-        /* Анимированный фон */
-        #bg {
-            position: fixed;
-            width: 100%;
-            height: 100%;
-            z-index: -1;
-        }
-
-        .floating-heart {
-            position: absolute;
-            color: var(--accent);
-            opacity: 0.3;
-            user-select: none;
-            pointer-events: none;
-            animation: move linear infinite;
-        }
-
-        @keyframes move {
-            from { transform: translateY(110vh) rotate(0deg); }
-            to { transform: translateY(-20vh) rotate(360deg); }
-        }
-
-        /* Контент */
-        .container {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100%;
-            padding: 20px;
-        }
-
-        .box {
-            background: white;
-            padding: 40px 20px;
-            border-radius: 30px;
-            box-shadow: 20px 20px 60px #d9ccd0, -20px -20px 60px #ffffff;
-            text-align: center;
-            width: 100%;
-            max-width: 350px;
-            position: relative;
-            z-index: 10;
-        }
-
-        h2 { color: var(--dark); font-size: 1.4rem; margin-bottom: 25px; line-height: 1.4; }
-
-        .btn-group {
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-            align-items: center;
-        }
-
-        .btn {
-            width: 100%;
-            padding: 18px;
-            border: none;
-            border-radius: 15px;
-            font-size: 1rem;
-            font-weight: bold;
-            cursor: pointer;
-            transition: all 0.2s;
-            text-decoration: none;
-            display: block;
-        }
-
-        .btn-main {
-            background: var(--accent);
-            color: white;
-            box-shadow: 0 10px 20px rgba(255, 77, 109, 0.3);
-        }
-
-        .btn-alt {
-            background: #f8f9fa;
-            color: #adb5bd;
-            position: relative;
-        }
-
+        .container { position: relative; z-index: 10; height: 100%; display: flex; align-items: center; justify-content: center; padding: 20px; }
+        .card { background: rgba(255, 255, 255, 0.8); backdrop-filter: blur(10px); border-radius: 30px; padding: 30px 20px; width: 100%; max-width: 350px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.05); border: 1px solid white; transition: 0.5s; }
+        
         .hidden { display: none; }
+        h2 { font-size: 1.3rem; margin-bottom: 20px; font-weight: 400; }
+        .btn { background: var(--deep-pink); color: white; border: none; padding: 15px; border-radius: 15px; width: 100%; font-size: 1rem; cursor: pointer; margin-top: 10px; }
+        
+        /* Стаканчики */
+        .cup-container { display: flex; justify-content: space-around; margin: 20px 0; }
+        .cup { font-size: 3rem; cursor: pointer; transition: 0.5s; }
+        
+        /* Слот-машина слов */
+        .word-slot { display: inline-block; padding: 10px; border: 1px dashed var(--deep-pink); margin: 5px; border-radius: 10px; cursor: pointer; }
 
-        /* Эффект тряски для ошибок */
-        @keyframes shake {
-            0% { transform: translateX(0); }
-            25% { transform: translateX(-5px); }
-            75% { transform: translateX(5px); }
-            100% { transform: translateX(0); }
-        }
-        .shake { animation: shake 0.3s ease-in-out; }
+        input { width: 100%; padding: 12px; border: 1px solid var(--soft-pink); border-radius: 10px; text-align: center; font-size: 1.1rem; outline: none; }
     </style>
 </head>
 <body>
 
-<div id="bg"></div>
+<div class="bg" id="bg"></div>
 
 <div class="container">
-    <div id="s1" class="box">
-        <h2>Ну привет! Твой любимый человек кое-что подготовил... <br><br>Готова?</h2>
-        <div class="btn-group">
-            <button class="btn btn-main" onclick="next(1, 2)">Да, конечно! ❤️</button>
-            <button class="btn btn-alt" onclick="fakeNo()">Ну... не знаю</button>
-        </div>
+    <div id="s1" class="card" style="opacity: 0.1; filter: blur(10px);" onclick="this.style.opacity=1; this.style.filter='none';">
+        <h2>Тут всё затуманено...</h2>
+        <p>Нажми на это сообщение, чтобы проявить реальность.</p>
+        <button class="btn hidden" id="startBtn" onclick="next(1, 2)">Теперь погнали!</button>
     </div>
 
-    <div id="s2" class="box hidden">
-        <h2>Так, подожди. Важный вопрос: <br><br>Кто тут самая красивая девочка?</h2>
-        <div class="btn-group">
-            <button class="btn btn-main" onclick="next(2, 3)">Это я, без вариантов ✨</button>
-            <button id="runaway" class="btn btn-alt" onmouseover="run(this)" onclick="run(this)">Точно не я</button>
+    <div id="s2" class="card hidden">
+        <h2>Где спрятан ключ?</h2>
+        <p>Угадай, под каким сердцем подарок.</p>
+        <div class="cup-container" id="cups">
+            <div class="cup" onclick="checkCup(0)">🤍</div>
+            <div class="cup" onclick="checkCup(1)">🤍</div>
+            <div class="cup" onclick="checkCup(2)">🤍</div>
         </div>
+        <p id="cupMsg"></p>
     </div>
 
-    <div id="s3" class="box hidden">
-        <h2>Ну ладно, убедила) <br><br>Твой подарок заслужил такую хозяйку!</h2>
-        <p style="color: #666; margin-bottom: 25px;">Нажимай на кнопку ниже, там ссылка на WB</p>
-        <a href="ССЫЛКА_НА_СЕРТИФИКАТ" class="btn btn-main">ЗАБРАТЬ ПОДАРОК 🎁</a>
+    <div id="s3" class="card hidden">
+        <h2>Собери фразу:</h2>
+        <div id="wordArea">
+            <div class="word-slot" onclick="pick(this)">лучшее</div>
+            <div class="word-slot" onclick="pick(this)">Ты</div>
+            <div class="word-slot" onclick="pick(this)">мое</div>
+        </div>
+        <p id="phraseResult" style="margin-top: 15px; font-weight: bold;"></p>
+    </div>
+
+    <div id="s4" class="card hidden">
+        <h2>Ты точно хочешь подарок?</h2>
+        <button class="btn" onclick="next(4, 5)">ДА!</button>
+        <button class="btn" style="background:#eee; color:#aaa; position:relative;" id="runBtn" onmouseover="run()">Нет, передумала</button>
+    </div>
+
+    <div id="s5" class="card hidden">
+        <h2>Последний замок 🔐</h2>
+        <p>Введи день нашего знакомства (например, 1506)</p>
+        <input type="number" id="finalCode" placeholder="0000">
+        <button class="btn" onclick="validate()">ОТКРЫТЬ</button>
+    </div>
+
+    <div id="s6" class="card hidden">
+        <h2 style="color:var(--deep-pink)">УРА! ТЫ ЭТО СДЕЛАЛА! 💖</h2>
+        <p>Ты прошла все испытания. Теперь законный подарок — твой!</p>
+        <a href="ССЫЛКА_НА_СЕРТИФИКАТ" class="btn" style="text-decoration:none; display:block;">ЗАБРАТЬ ПОДАРОК!!</a>
     </div>
 </div>
 
 <script>
-    // Создаем сердечки
+    // Фон
     const bg = document.getElementById('bg');
     for(let i=0; i<20; i++) {
         const h = document.createElement('div');
-        h.className = 'floating-heart';
-        h.innerHTML = '❤️';
+        h.className = 'blur-heart'; h.innerHTML = '💗';
         h.style.left = Math.random() * 100 + 'vw';
-        h.style.fontSize = (Math.random() * 20 + 10) + 'px';
-        h.style.animationDuration = (Math.random() * 3 + 4) + 's';
+        h.style.fontSize = (Math.random() * 40 + 20) + 'px';
+        h.style.animationDuration = (Math.random() * 5 + 5) + 's';
         h.style.animationDelay = Math.random() * 5 + 's';
         bg.appendChild(h);
     }
 
-    function next(curr, next) {
-        document.getElementById('s' + curr).classList.add('hidden');
-        document.getElementById('s' + next).classList.remove('hidden');
+    // Логика перехода
+    function next(c, n) {
+        document.getElementById('s'+c).classList.add('hidden');
+        document.getElementById('s'+n).classList.remove('hidden');
     }
 
-    function fakeNo() {
-        const b = document.querySelector('#s1');
-        b.classList.add('shake');
-        setTimeout(() => b.classList.remove('shake'), 300);
-        alert("Ой, кажется, эта кнопка сломалась. Попробуй нажать на левую! 😉");
+    // Шаг 1
+    document.getElementById('s1').onclick = function() {
+        this.style.opacity=1; this.style.filter='none';
+        document.getElementById('startBtn').classList.remove('hidden');
+    };
+
+    // Шаг 2: Стаканчики
+    let giftPos = Math.floor(Math.random() * 3);
+    function checkCup(idx) {
+        const cups = document.querySelectorAll('.cup');
+        if(idx === giftPos) {
+            cups[idx].innerHTML = '🎁';
+            document.getElementById('cupMsg').innerHTML = "Угадала! Идем дальше...";
+            setTimeout(() => next(2, 3), 1500);
+        } else {
+            cups[idx].innerHTML = '❌';
+            document.getElementById('cupMsg').innerHTML = "Мимо! Они перемешались...";
+            setTimeout(() => {
+                cups.forEach(c => c.innerHTML = '🤍');
+                giftPos = Math.floor(Math.random() * 3);
+            }, 1000);
+        }
     }
 
-    function run(btn) {
-        // Кнопка убегает
-        const x = Math.random() * (window.innerWidth - btn.offsetWidth - 20);
-        const y = Math.random() * (window.innerHeight - btn.offsetHeight - 20);
-        
+    // Шаг 3: Фраза
+    let phrase = [];
+    function pick(el) {
+        phrase.push(el.innerHTML);
+        el.style.display = 'none';
+        document.getElementById('phraseResult').innerHTML = phrase.join(' ');
+        if(phrase.length === 3) {
+            setTimeout(() => next(3, 4), 1000);
+        }
+    }
+
+    // Шаг 4: Убегающая кнопка
+    function run() {
+        const btn = document.getElementById('runBtn');
         btn.style.position = 'fixed';
-        btn.style.left = x + 'px';
-        btn.style.top = y + 'px';
-        btn.style.width = '150px';
-        btn.innerHTML = "Эй! Куда?";
+        btn.style.left = Math.random() * 80 + 'vw';
+        btn.style.top = Math.random() * 80 + 'vh';
+    }
+
+    // Шаг 5: Код
+    function validate() {
+        const val = document.getElementById('finalCode').value;
+        // ЗАМЕНИ '1234' НА ВАШУ ДАТУ
+        if(val === '1711') {
+            next(5, 6);
+        } else {
+            alert("Не-а, вспомни получше!");
+        }
     }
 </script>
-
 </body>
 </html>
