@@ -2,570 +2,180 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LINEMAP | METAMORPHOSIS</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>For my girl ❤️</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;700&family=Orbitron:wght@400;700;900&display=swap');
-        
         :root {
-            --neon-green: #00ff88;
-            --neon-blue: #0088ff;
-            --neon-purple: #ff00ff;
-            --neon-orange: #ff8800;
-            --dark-bg: #0a0a0a;
-            --darker-bg: #050505;
-            --grid-color: #1a1a1a;
+            --accent: #ff4d6d;
+            --secondary: #ff758f;
+            --dark: #2b2d42;
         }
-        
-        * {
+
+        body, html {
             margin: 0;
             padding: 0;
-            box-sizing: border-box;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background: #fff0f3; /* Нежно-розовый фон */
+            font-family: 'Montserrat', sans-serif;
         }
-        
-        body {
-            background: var(--dark-bg);
-            color: white;
-            font-family: 'JetBrains Mono', monospace;
-            overflow-x: hidden;
-            background-image: 
-                linear-gradient(var(--grid-color) 1px, transparent 1px),
-                linear-gradient(90deg, var(--grid-color) 1px, transparent 1px);
-            background-size: 50px 50px;
-        }
-        
-        .evolution-timeline {
-            position: fixed;
-            right: 2rem;
-            top: 50%;
-            transform: translateY(-50%);
-            z-index: 100;
-        }
-        
-        .timeline-dot {
-            width: 12px;
-            height: 12px;
-            border-radius: 50%;
-            background: #333;
-            margin: 2rem 0;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            position: relative;
-        }
-        
-        .timeline-dot.active {
-            background: var(--neon-green);
-            box-shadow: 0 0 20px var(--neon-green);
-        }
-        
-        .timeline-dot::after {
-            content: attr(data-phase);
-            position: absolute;
-            right: 20px;
-            top: 50%;
-            transform: translateY(-50%);
-            background: rgba(0, 0, 0, 0.8);
-            padding: 0.3rem 0.8rem;
-            border-radius: 4px;
-            font-size: 0.8rem;
-            opacity: 0;
-            transition: opacity 0.3s ease;
-            white-space: nowrap;
-        }
-        
-        .timeline-dot:hover::after {
-            opacity: 1;
-        }
-        
-        .terminal-header {
-            background: rgba(10, 10, 10, 0.95);
-            border-bottom: 2px solid var(--neon-green);
-            padding: 1rem 2rem;
+
+        /* Анимированный фон */
+        #bg {
             position: fixed;
             width: 100%;
-            top: 0;
-            z-index: 1000;
-            backdrop-filter: blur(10px);
+            height: 100%;
+            z-index: -1;
         }
-        
-        .header-content {
+
+        .floating-heart {
+            position: absolute;
+            color: var(--accent);
+            opacity: 0.3;
+            user-select: none;
+            pointer-events: none;
+            animation: move linear infinite;
+        }
+
+        @keyframes move {
+            from { transform: translateY(110vh) rotate(0deg); }
+            to { transform: translateY(-20vh) rotate(360deg); }
+        }
+
+        /* Контент */
+        .container {
             display: flex;
-            justify-content: space-between;
-            align-items: center;
-            max-width: 1400px;
-            margin: 0 auto;
-        }
-        
-        .logo {
-            font-family: 'Orbitron', sans-serif;
-            font-size: 1.8rem;
-            font-weight: 900;
-            background: linear-gradient(45deg, var(--neon-green), var(--neon-blue));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            text-shadow: 0 0 30px rgba(0, 255, 136, 0.5);
-        }
-        
-        .main-container {
-            margin-top: 80px;
-            min-height: 100vh;
-        }
-        
-        .chapter {
-            min-height: 100vh;
-            padding: 6rem 2rem;
-            display: flex;
-            align-items: center;
             justify-content: center;
-            position: relative;
-            opacity: 0;
-            transform: translateY(50px);
-            transition: all 0.8s ease;
+            align-items: center;
+            height: 100%;
+            padding: 20px;
         }
-        
-        .chapter.active {
-            opacity: 1;
-            transform: translateY(0);
-        }
-        
-        .chapter-content {
-            max-width: 1000px;
+
+        .box {
+            background: white;
+            padding: 40px 20px;
+            border-radius: 30px;
+            box-shadow: 20px 20px 60px #d9ccd0, -20px -20px 60px #ffffff;
             text-align: center;
-        }
-        
-        .chapter-title {
-            font-family: 'Orbitron', sans-serif;
-            font-size: 3.5rem;
-            margin-bottom: 2rem;
-            background: linear-gradient(45deg, var(--neon-green), var(--neon-orange));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-        
-        .chapter-subtitle {
-            font-size: 1.5rem;
-            color: var(--neon-blue);
-            margin-bottom: 3rem;
-            font-weight: 300;
-        }
-        
-        .chapter-text {
-            font-size: 1.1rem;
-            line-height: 1.8;
-            color: #ccc;
-            margin-bottom: 2rem;
-            text-align: left;
-            background: rgba(20, 20, 20, 0.6);
-            padding: 2rem;
-            border-radius: 10px;
-            border-left: 3px solid var(--neon-purple);
-        }
-        
-        .highlight {
-            color: var(--neon-orange);
-            font-weight: bold;
-        }
-        
-        .phase-marker {
-            display: inline-block;
-            background: rgba(255, 136, 0, 0.1);
-            color: var(--neon-orange);
-            padding: 0.5rem 1rem;
-            border-radius: 20px;
-            font-size: 0.9rem;
-            margin: 1rem 0;
-            border: 1px solid var(--neon-orange);
-        }
-        
-        .metamorphosis-visual {
-            width: 300px;
-            height: 300px;
-            margin: 2rem auto;
+            width: 100%;
+            max-width: 350px;
             position: relative;
+            z-index: 10;
         }
-        
-        .identity-circle {
-            position: absolute;
-            border-radius: 50%;
-            border: 2px solid;
+
+        h2 { color: var(--dark); font-size: 1.4rem; margin-bottom: 25px; line-height: 1.4; }
+
+        .btn-group {
             display: flex;
+            flex-direction: column;
+            gap: 15px;
             align-items: center;
-            justify-content: center;
-            font-family: 'Orbitron', sans-serif;
-            font-weight: bold;
-            transition: all 1s ease;
         }
-        
-        .shooter-era {
-            width: 120px;
-            height: 120px;
-            border-color: #ff4444;
-            color: #ff4444;
-            background: rgba(255, 68, 68, 0.1);
-            top: 50%;
-            left: 25%;
-            transform: translate(-50%, -50%);
-        }
-        
-        .transition-era {
-            width: 80px;
-            height: 80px;
-            border-color: #ff8844;
-            color: #ff8844;
-            background: rgba(255, 136, 68, 0.1);
-            top: 30%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-        }
-        
-        .linemap-era {
-            width: 150px;
-            height: 150px;
-            border-color: var(--neon-green);
-            color: var(--neon-green);
-            background: rgba(0, 255, 136, 0.1);
-            top: 50%;
-            left: 75%;
-            transform: translate(-50%, -50%);
-        }
-        
-        .connection-line {
-            position: absolute;
-            height: 2px;
-            background: linear-gradient(90deg, #ff4444, var(--neon-green));
-            top: 50%;
-            left: 25%;
-            width: 50%;
-            transform: translateY(-50%);
-        }
-        
-        .philosophy-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 2rem;
-            margin-top: 3rem;
-        }
-        
-        .philosophy-card {
-            background: rgba(20, 20, 20, 0.8);
-            padding: 2rem;
-            border-radius: 10px;
-            border: 1px solid #333;
-            transition: all 0.3s ease;
-        }
-        
-        .philosophy-card:hover {
-            border-color: var(--neon-blue);
-            transform: translateY(-5px);
-        }
-        
-        .philosophy-icon {
-            font-size: 2rem;
-            margin-bottom: 1rem;
-        }
-        
-        .philosophy-title {
-            color: var(--neon-blue);
-            font-family: 'Orbitron', sans-serif;
-            margin-bottom: 1rem;
-        }
-        
-        .current-focus {
-            background: rgba(0, 136, 255, 0.1);
-            border: 1px solid var(--neon-blue);
-            padding: 2rem;
-            border-radius: 10px;
-            margin-top: 2rem;
-        }
-        
-        .focus-title {
-            color: var(--neon-blue);
-            font-family: 'Orbitron', sans-serif;
-            margin-bottom: 1rem;
-        }
-        
-        .tool-list {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 0.5rem;
-            justify-content: center;
-            margin: 1rem 0;
-        }
-        
-        .tool-tag {
-            background: rgba(0, 255, 136, 0.1);
-            color: var(--neon-green);
-            padding: 0.3rem 0.8rem;
+
+        .btn {
+            width: 100%;
+            padding: 18px;
+            border: none;
             border-radius: 15px;
-            font-size: 0.8rem;
-            border: 1px solid rgba(0, 255, 136, 0.3);
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-decoration: none;
+            display: block;
         }
-        
-        .footer {
-            background: var(--darker-bg);
-            padding: 2rem;
-            text-align: center;
-            color: #666;
-            border-top: 1px solid #333;
+
+        .btn-main {
+            background: var(--accent);
+            color: white;
+            box-shadow: 0 10px 20px rgba(255, 77, 109, 0.3);
         }
-        
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+
+        .btn-alt {
+            background: #f8f9fa;
+            color: #adb5bd;
+            position: relative;
         }
-        
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.7; }
+
+        .hidden { display: none; }
+
+        /* Эффект тряски для ошибок */
+        @keyframes shake {
+            0% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+            100% { transform: translateX(0); }
         }
-        
-        .pulse {
-            animation: pulse 2s infinite;
-        }
-        
-        @media (max-width: 768px) {
-            .evolution-timeline {
-                display: none;
-            }
-            
-            .chapter-title {
-                font-size: 2.5rem;
-            }
-            
-            .metamorphosis-visual {
-                transform: scale(0.8);
-            }
-        }
+        .shake { animation: shake 0.3s ease-in-out; }
     </style>
 </head>
 <body>
-    <div class="evolution-timeline">
-        <div class="timeline-dot active" data-phase="SHOOTER ERA" onclick="scrollToChapter(0)"></div>
-        <div class="timeline-dot" data-phase="METAMORPHOSIS" onclick="scrollToChapter(1)"></div>
-        <div class="timeline-dot" data-phase="LINEMAP RISING" onclick="scrollToChapter(2)"></div>
-        <div class="timeline-dot" data-phase="CURRENT PATH" onclick="scrollToChapter(3)"></div>
-    </div>
-    
-    <header class="terminal-header">
-        <div class="header-content">
-            <div class="logo">LINEMAP_EVOLUTION</div>
-        </div>
-    </header>
-    
-    <main class="main-container">
-        <!-- Chapter 1: SHOOTER ERA -->
-        <section class="chapter active" id="chapter-0">
-            <div class="chapter-content">
-                <div class="phase-marker">ИЮНЬ 2024</div>
-                <h1 class="chapter-title">SHOOTER ERA</h1>
-                <h2 class="chapter-subtitle">Начало пути в тенях</h2>
-                
-                <div class="chapter-text">
-                    <p>В середине 2024 года в Telegram-комьюнити появляется личность под псевдонимом <span class="highlight">SHOOTER</span> — ничем не примечательная фигура, ограничивающаяся базовыми инструментами вроде "Жалкого Шерлока".</p>
-                    
-                    <p style="margin-top: 1rem;">Агрессивный стиль общения и склонность бросать слова на ветер характеризовали этот период. SHOOTER не стремился к глубокому изучению методик, довольствуясь поверхностными знаниями.</p>
-                    
-                    <p style="margin-top: 1rem;">Это была фаза становления — неосознанные поиски себя в мире OSINT, где амбиции опережали реальные возможности.</p>
-                </div>
-                
-                <div class="metamorphosis-visual">
-                    <div class="identity-circle shooter-era pulse">
-                        SHOOTER
-                    </div>
-                    <div class="connection-line"></div>
-                </div>
-            </div>
-        </section>
-        
-        <!-- Chapter 2: METAMORPHOSIS -->
-        <section class="chapter" id="chapter-1">
-            <div class="chapter-content">
-                <div class="phase-marker">ПЕРЕЛОМНЫЙ МОМЕНТ</div>
-                <h1 class="chapter-title">METAMORPHOSIS</h1>
-                <h2 class="chapter-subtitle">Катализатор трансформации</h2>
-                
-                <div class="chapter-text">
-                    <p>Поворотным моментом стало раскрытие личности близкого друга <span class="highlight">"*******"</span>. Этот инцидент заставил переосмыслить подход к собственной цифровой безопасности и методам работы.</p>
-                    
-                    <p style="margin-top: 1rem;">Осознание уязвимости и последствий неосторожности стало катализатором радикальных изменений. SHOOTER понял, что текущий путь ведет в тупик — необходима была полная трансформация.</p>
-                    
-                    <p style="margin-top: 1rem;">Агрессия уступила место аналитическому подходу, поверхностность — глубине изучения, импульсивность — стратегическому планированию.</p>
-                </div>
-                
-                <div class="metamorphosis-visual">
-                    <div class="identity-circle shooter-era">
-                        SHOOTER
-                    </div>
-                    <div class="identity-circle transition-era">
-                        ???
-                    </div>
-                    <div class="connection-line"></div>
-                </div>
-            </div>
-        </section>
-        
-        <!-- Chapter 3: LINEMAP RISING -->
-        <section class="chapter" id="chapter-2">
-            <div class="chapter-content">
-                <div class="phase-marker">РОЖДЕНИЕ ЛЕГЕНДЫ</div>
-                <h1 class="chapter-title">LINEMAP RISING</h1>
-                <h2 class="chapter-subtitle">30 минут, изменившие всё</h2>
-                
-                <div class="chapter-text">
-                    <p>После получаса глубоких раздумий рождается псевдоним <span class="highlight">LINEMAP</span> — вдохновленный ассоциациями с картами метро и сложными маршрутами.</p>
-                    
-                    <p style="margin-top: 1rem;">Новое имя символизировало переход от простого "стрелка" к создателю сложных маршрутов информации, от поверхностного наблюдателя к архитектору цифровых расследований.</p>
-                    
-                    <p style="margin-top: 1rem;">Linemap — это не просто смена ника, это полная трансформация подхода, философии и методов работы. Отказ от показухи в пользу реального развития.</p>
-                </div>
-                
-                <div class="metamorphosis-visual">
-                    <div class="identity-circle shooter-era">
-                        SHOOTER
-                    </div>
-                    <div class="identity-circle linemap-era pulse">
-                        LINEMAP
-                    </div>
-                    <div class="connection-line"></div>
-                </div>
-            </div>
-        </section>
-        
-        <!-- Chapter 4: CURRENT PATH -->
-        <section class="chapter" id="chapter-3">
-            <div class="chapter-content">
-                <div class="phase-marker">ТЕКУЩИЙ ПУТЬ</div>
-                <h1 class="chapter-title">PERPETUAL EVOLUTION</h1>
-                <h2 class="chapter-subtitle">Путь постоянного совершенствования</h2>
-                
-                <div class="chapter-text">
-                    <p>В настоящий момент Linemap сознательно избегает публичной активности, сосредоточившись на <span class="highlight">глубоком саморазвитии</span>. Каждый день посвящен освоению новых методик, тестированию инструментов и исследованию неизведанных областей OSINT.</p>
-                    
-                    <p style="margin-top: 1rem;">Отсутствие публичных проявлений — не признак бездействия, а стратегический выбор в пользу накопления реальной экспертизы вместо демонстрации мнимых достижений.</p>
-                </div>
-                
-                <div class="philosophy-grid">
-                    <div class="philosophy-card">
-                        <div class="philosophy-icon">🔍</div>
-                        <h3 class="philosophy-title">МЕТОДИЧЕСКИЙ ПОДХОД</h3>
-                        <p>Системное изучение инструментов и техник, от базовых до продвинутых</p>
-                    </div>
-                    
-                    <div class="philosophy-card">
-                        <div class="philosophy-icon">🛡️</div>
-                        <h3 class="philosophy-title">ОПЕРАЦИОННАЯ БЕЗОПАСНОСТЬ</h3>
-                        <p>Приоритет анонимности и безопасности в каждой операции</p>
-                    </div>
-                    
-                    <div class="philosophy-card">
-                        <div class="philosophy-icon">🧠</div>
-                        <h3 class="philosophy-title">АНАЛИТИЧЕСКОЕ МЫШЛЕНИЕ</h3>
-                        <p>Фокус на глубине анализа вместо поверхностных результатов</p>
-                    </div>
-                </div>
-                
-                <div class="current-focus">
-                    <h3 class="focus-title">ТЕКУЩИЕ НАПРАВЛЕНИЯ РАЗВИТИЯ</h3>
-                    <div class="tool-list">
-                        <span class="tool-tag">Advanced Social Engineering</span>
-                        <span class="tool-tag">Blockchain Analysis</span>
-                        <span class="tool-tag">ML-powered OSINT</span>
-                        <span class="tool-tag">Dark Web Monitoring</span>
-                        <span class="tool-tag">Geolocation Techniques</span>
-                        <span class="tool-tag">Network Analysis</span>
-                    </div>
-                    <p style="margin-top: 1rem; color: #ccc; font-size: 0.9rem;">
-                        "Совершенство достигается не когда нечего добавить, а когда нечего убрать"
-                    </p>
-                </div>
-            </div>
-        </section>
-    </main>
-    
-    <footer class="footer">
-        <p>© 2024 LINEMAP | FROM SHOOTER TO ARCHITECT</p>
-        <p style="margin-top: 0.5rem; font-size: 0.8rem; color: #444;">
-            Metamorphosis Complete • Evolution in Progress
-        </p>
-    </footer>
 
-    <script>
-        // Chapter navigation
-        const chapters = document.querySelectorAll('.chapter');
-        const timelineDots = document.querySelectorAll('.timeline-dot');
+<div id="bg"></div>
+
+<div class="container">
+    <div id="s1" class="box">
+        <h2>Ну привет! Твой любимый человек кое-что подготовил... <br><br>Готова?</h2>
+        <div class="btn-group">
+            <button class="btn btn-main" onclick="next(1, 2)">Да, конечно! ❤️</button>
+            <button class="btn btn-alt" onclick="fakeNo()">Ну... не знаю</button>
+        </div>
+    </div>
+
+    <div id="s2" class="box hidden">
+        <h2>Так, подожди. Важный вопрос: <br><br>Кто тут самая красивая девочка?</h2>
+        <div class="btn-group">
+            <button class="btn btn-main" onclick="next(2, 3)">Это я, без вариантов ✨</button>
+            <button id="runaway" class="btn btn-alt" onmouseover="run(this)" onclick="run(this)">Точно не я</button>
+        </div>
+    </div>
+
+    <div id="s3" class="box hidden">
+        <h2>Ну ладно, убедила) <br><br>Твой подарок заслужил такую хозяйку!</h2>
+        <p style="color: #666; margin-bottom: 25px;">Нажимай на кнопку ниже, там ссылка на WB</p>
+        <a href="ССЫЛКА_НА_СЕРТИФИКАТ" class="btn btn-main">ЗАБРАТЬ ПОДАРОК 🎁</a>
+    </div>
+</div>
+
+<script>
+    // Создаем сердечки
+    const bg = document.getElementById('bg');
+    for(let i=0; i<20; i++) {
+        const h = document.createElement('div');
+        h.className = 'floating-heart';
+        h.innerHTML = '❤️';
+        h.style.left = Math.random() * 100 + 'vw';
+        h.style.fontSize = (Math.random() * 20 + 10) + 'px';
+        h.style.animationDuration = (Math.random() * 3 + 4) + 's';
+        h.style.animationDelay = Math.random() * 5 + 's';
+        bg.appendChild(h);
+    }
+
+    function next(curr, next) {
+        document.getElementById('s' + curr).classList.add('hidden');
+        document.getElementById('s' + next).classList.remove('hidden');
+    }
+
+    function fakeNo() {
+        const b = document.querySelector('#s1');
+        b.classList.add('shake');
+        setTimeout(() => b.classList.remove('shake'), 300);
+        alert("Ой, кажется, эта кнопка сломалась. Попробуй нажать на левую! 😉");
+    }
+
+    function run(btn) {
+        // Кнопка убегает
+        const x = Math.random() * (window.innerWidth - btn.offsetWidth - 20);
+        const y = Math.random() * (window.innerHeight - btn.offsetHeight - 20);
         
-        function scrollToChapter(index) {
-            chapters.forEach(chapter => chapter.classList.remove('active'));
-            timelineDots.forEach(dot => dot.classList.remove('active'));
-            
-            chapters[index].classList.add('active');
-            timelineDots[index].classList.add('active');
-            
-            window.scrollTo({
-                top: chapters[index].offsetTop - 80,
-                behavior: 'smooth'
-            });
-        }
-        
-        // Intersection Observer for chapter activation
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    const index = Array.from(chapters).indexOf(entry.target);
-                    timelineDots.forEach(dot => dot.classList.remove('active'));
-                    if (timelineDots[index]) {
-                        timelineDots[index].classList.add('active');
-                    }
-                }
-            });
-        }, { threshold: 0.5 });
-        
-        chapters.forEach(chapter => observer.observe(chapter));
-        
-        // Add some interactive effects
-        document.addEventListener('mousemove', (e) => {
-            const shooter = document.querySelector('.shooter-era');
-            const linemap = document.querySelector('.linemap-era');
-            
-            const x = e.clientX / window.innerWidth;
-            const y = e.clientY / window.innerHeight;
-            
-            if (shooter) {
-                shooter.style.transform = `translate(-50%, -50%) translate(${x * 10 - 5}px, ${y * 10 - 5}px)`;
-            }
-            if (linemap) {
-                linemap.style.transform = `translate(-50%, -50%) translate(${x * 15 - 7.5}px, ${y * 15 - 7.5}px)`;
-            }
-        });
-        
-        // Typewriter effect for chapter titles
-        function typeWriter(element, text, speed = 100) {
-            let i = 0;
-            element.innerHTML = '';
-            
-            function type() {
-                if (i < text.length) {
-                    element.innerHTML += text.charAt(i);
-                    i++;
-                    setTimeout(type, speed);
-                }
-            }
-            type();
-        }
-        
-        // Initialize first chapter typing
-        setTimeout(() => {
-            const firstTitle = document.querySelector('#chapter-0 .chapter-title');
-            if (firstTitle) {
-                typeWriter(firstTitle, 'SHOOTER ERA');
-            }
-        }, 1000);
-    </script>
+        btn.style.position = 'fixed';
+        btn.style.left = x + 'px';
+        btn.style.top = y + 'px';
+        btn.style.width = '150px';
+        btn.innerHTML = "Эй! Куда?";
+    }
+</script>
+
 </body>
 </html>
