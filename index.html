@@ -1,314 +1,212 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>28.04</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>WB_CORE_NULL_PROTOCOL</title>
+    <style>
+        :root { --color: #00ff9c; --bg: #000800; --glow: 0 0 15px #00ff9c; --err: #ff003c; }
+        body, html { margin: 0; padding: 0; width: 100%; height: 100%; background: var(--bg); color: var(--color); font-family: 'Courier New', monospace; overflow: hidden; }
+        
+        #matrix { position: fixed; top: 0; left: 0; z-index: -1; opacity: 0.1; }
 
-<style>
-body {
-  margin:0;
-  font-family: system-ui, sans-serif;
-  background: linear-gradient(135deg,#f3ecff,#e6f7ff);
-}
+        /* Эффект шума и помех */
+        .noise { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 100; pointer-events: none; opacity: 0.03; background: url('https://media.giphy.com/media/oEI9uWUznW3pS/giphy.gif'); }
 
-.section {
-  display:none;
-  min-height:100vh;
-  align-items:center;
-  justify-content:center;
-  flex-direction:column;
-  text-align:center;
-  padding:20px;
-  animation:fade 0.6s ease;
-}
-.active { display:flex; }
+        #wrapper { position: relative; z-index: 10; height: 100vh; display: flex; flex-direction: column; padding: 15px; box-sizing: border-box; }
+        
+        header { display: flex; justify-content: space-between; font-size: 10px; border-bottom: 1px solid var(--color); padding-bottom: 5px; margin-bottom: 10px; opacity: 0.8; }
+        
+        #terminal { flex-grow: 1; overflow-y: auto; scrollbar-width: none; }
+        #terminal::-webkit-scrollbar { display: none; }
+        
+        .line { margin-bottom: 6px; font-size: 13px; line-height: 1.4; }
+        .sys { color: #008f11; }
+        .danger { color: var(--err); text-shadow: 0 0 5px var(--err); }
+        .success { color: #fff; text-shadow: var(--glow); }
 
-.card {
-  backdrop-filter: blur(14px);
-  background: rgba(255,255,255,0.7);
-  padding:30px;
-  border-radius:20px;
-  max-width:420px;
-  box-shadow:0 10px 40px rgba(0,0,0,0.08);
-}
+        /* Виджеты взлома */
+        .widget { border: 1px solid var(--color); padding: 10px; margin: 10px 0; background: rgba(0,255,156,0.05); display: none; }
+        .progress-container { width: 100%; border: 1px solid var(--color); height: 10px; margin-top: 5px; }
+        #progress-bar { width: 0%; height: 100%; background: var(--color); box-shadow: var(--glow); transition: width 0.3s; }
 
-button {
-  margin-top:20px;
-  padding:10px 18px;
-  border:none;
-  border-radius:10px;
-  background:#7dd3fc;
-  color:#fff;
-  cursor:pointer;
-}
+        .input-area { display: flex; align-items: center; background: rgba(0,255,156,0.1); border: 1px solid var(--color); padding: 15px; margin-top: 10px; box-shadow: inset 0 0 10px rgba(0,255,156,0.2); }
+        #user-in { flex-grow: 1; background: transparent; border: none; color: var(--color); outline: none; font-size: 18px; width: 100%; }
 
-.option {
-  margin:8px;
-  padding:10px;
-  background:#fff;
-  border-radius:10px;
-  cursor:pointer;
-}
-
-.box {
-  width:80px;
-  height:80px;
-  margin:10px;
-  display:inline-block;
-  background:#fff;
-  border-radius:12px;
-}
-.secret { background:#fde68a; cursor:pointer; }
-
-input {
-  margin-top:10px;
-  padding:10px;
-  border-radius:10px;
-  border:1px solid #ccc;
-}
-
-@keyframes fade {
-  from {opacity:0; transform:translateY(20px);}
-  to {opacity:1; transform:translateY(0);}
-}
-</style>
+        #final { display: none; position: fixed; inset: 0; background: #000; z-index: 1000; flex-direction: column; align-items: center; justify-content: center; text-align: center; }
+        .cert-container { border: 2px solid var(--color); padding: 40px; box-shadow: var(--glow); background: rgba(0,255,156,0.05); cursor: pointer; }
+    </style>
 </head>
+<body class="crt">
+    <div class="noise"></div>
+    <canvas id="matrix"></canvas>
+    <div id="wrapper">
+        <header>
+            <span>INTEGRITY: <span id="integrity">100%</span></span>
+            <span id="timer">07:00</span>
+            <span>ENCRYPT: AES-256</span>
+        </header>
 
-<body>
+        <div id="terminal"></div>
 
-<!-- старт -->
-<div id="start" class="section active">
-  <div class="card">
-    <h1>эй 👀</h1>
-    <p>это не поздравление<br>это мини-квест</p>
-    <button onclick="next(1)">начать</button>
-  </div>
-</div>
+        <div id="hack-widget" class="widget">
+            <div id="widget-label" style="font-size: 10px; margin-bottom: 5px;">DOWNLOAD_STATUS</div>
+            <div class="progress-container"><div id="progress-bar"></div></div>
+        </div>
 
-<!-- этап 1 -->
-<div id="step1" class="section">
-  <div class="card">
-    <p>ты недавно была там, где жарко и шумно<br><br>где это?</p>
-    <input id="riddle">
-    <button onclick="check1()">...</button>
-    <p id="hint1"></p>
-  </div>
-</div>
+        <div class="input-area">
+            <span style="margin-right:10px">#</span>
+            <input type="text" id="user-in" autocomplete="off" autofocus spellcheck="false">
+        </div>
+    </div>
 
-<!-- этап 2 -->
-<div id="step2" class="section">
-  <div class="card">
-    <p>мини тест: тебя берут в стюардессы?</p>
-    <p>пассажир паникует</p>
-
-    <div class="option" onclick="check2(false)">игнорировать</div>
-    <div class="option" onclick="check2(true)">спокойно помочь</div>
-    <div class="option" onclick="check2(false)">паниковать тоже</div>
-
-    <p id="hint2"></p>
-  </div>
-</div>
-
-<!-- этап 3 игра -->
-<div id="step3" class="section">
-  <div class="card">
-    <p>проведи самолёт ✈️</p>
-    <canvas id="game" width="300" height="200"></canvas>
-  </div>
-</div>
-
-<!-- этап 4 -->
-<div id="step4" class="section">
-  <div class="card">
-    <p>мы оба делали вид что это норм<br><br>напиши это слово</p>
-    <input id="cipher">
-    <button onclick="check4()">...</button>
-  </div>
-</div>
-
-<!-- финал -->
-<div id="final" class="section">
-  <div class="card">
-    <h2>с днём рождения любимая</h2>
-<p>
-я старался сделать что-то креативное - возможно, получилось странно, но в этом и смысл<br><br>
-
-главное, что оно работает 🙂<br><br>
-
-я желаю тебе счастья, здоровья, больше путешествий и мест, в которые ты реально хочешь возвращаться<br>
-и чтобы в этом году было больше хороших моментов, чем ты ожидаешь<br><br>
-
-надеюсь, ты проведёшь этот день классно
-</p>
-
-    <a href="ТВОЯ_ССЫЛКА_СЮДА" target="_blank">
-      <button>забрать подарок</button>
-    </a>
-  </div>
-</div>
+    <div id="final">
+        <div class="cert-container" onclick="copyCode()">
+            <div style="font-size: 12px; letter-spacing: 5px; margin-bottom: 20px; opacity: 0.7;">W-B GIFT SYSTEM ACCESS</div>
+            <div id="code" style="font-size: 28px; font-weight: bold; letter-spacing: 4px;">8D6D-PC62-TW8E-2Z43</div>
+            <div style="margin-top: 30px; font-size: 10px; border-top: 1px solid var(--color); padding-top: 10px;">VALID UNTIL: 2027 | 1000 RUB</div>
+        </div>
+        <p style="font-size: 11px; margin-top: 20px; color: #fff; opacity: 0.4;">Connection terminated. Encrypting traces...</p>
+    </div>
 
 <script>
-function next(step){
-  document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+    const term = document.getElementById('terminal');
+    const input = document.getElementById('user-in');
+    const widget = document.getElementById('hack-widget');
+    const progressBar = document.getElementById('progress-bar');
+    const integrityEl = document.getElementById('integrity');
+    
+    let stage = "boot";
+    let subStep = 0;
+    let integrity = 100;
 
-  if(step === 'final'){
-    document.getElementById('final').classList.add('active');
-    return;
-  }
+    const skyQuiz = [
+        { q: "> [SITUATION 1]: Разгерметизация! Твоё первое действие?", keys: ["маску", "маска", "сесть", "пристегнуть", "кислород"] },
+        { q: "> [SITUATION 2]: Пассажир отказывается выключать телефон перед взлетом. Твоя тактика?", keys: ["настоять", "правила", "безопасность", "попрошу", "выключить", "спокойно"] },
+        { q: "> [SITUATION 3]: Кто-то курит в туалете, сработал датчик. Твои действия?", keys: ["квс", "командир", "штраф", "сообщить", "пилот", "прекратить"] },
+        { q: "> [SITUATION 4]: Пьяный пассажир пытается открыть дверь в полете. Что делаешь?", keys: ["остановить", "связать", "помощь", "квс", "командир", "безопасность", "полиция", "пилоту"] }
+    ];
 
-  document.getElementById('step'+step).classList.add('active');
-
-  if(step === 3){
-    startGame();
-  }
-}
-
-// этап 1
-const hints = ['ммм', 'почти', 'нет но уверенно'];
-
-function check1(){
-  let val = document.getElementById('riddle').value.toLowerCase().trim();
-
-  if(val.includes('тай')){
-    next(2);
-  } else {
-    document.getElementById('hint1').innerText =
-      hints[Math.floor(Math.random()*hints.length)];
-  }
-}
-
-// этап 2
-function check2(correct){
-  if(correct){
-    next(3);
-  } else {
-    document.getElementById('hint2').innerText = 'не лучший вариант';
-  }
-}
-
-// игра
-function startGame(){
-  let canvas = document.getElementById('game');
-  let ctx = canvas.getContext('2d');
-
-  let x = 50;
-  let y = 100;
-
-  let gravity = 0.22;   // мягкое падение
-  let velocity = 0;
-  let lift = -5.2;      // НЕ слишком сильный прыжок
-
-  let obstacles = [];
-  let frame = 0;
-  let gameOver = false;
-
-  function jump(){
-    velocity = lift; // стабильный одиночный импульс
-  }
-
-  canvas.onclick = jump;
-  canvas.ontouchstart = jump;
-  document.onkeydown = (e)=>{
-    if(e.key === 'ArrowUp') jump();
-  };
-
-  function createObstacle(){
-    let gap = 110; // комфортный проход
-    let topHeight = Math.random() * 70 + 20;
-
-    obstacles.push({
-      x: canvas.width,
-      top: topHeight,
-      bottom: topHeight + gap
-    });
-  }
-
-  function drawPlane(){
-    ctx.font = "22px sans-serif";
-    ctx.fillText('✈️', x, y);
-  }
-
-  function drawObstacles(){
-    ctx.fillStyle = "#cfcfcf";
-
-    obstacles.forEach(o=>{
-      ctx.fillRect(o.x, 0, 25, o.top);
-      ctx.fillRect(o.x, o.bottom, 25, canvas.height);
-
-      o.x -= 1.4; // спокойная скорость
-    });
-  }
-
-  function checkCollision(){
-    for(let o of obstacles){
-      if(x + 15 > o.x && x < o.x + 25){
-        if(y < o.top || y > o.bottom){
-          return true;
+    async function print(txt, type='') {
+        const div = document.createElement('div');
+        div.className = `line ${type}`;
+        term.appendChild(div);
+        for(let c of txt) {
+            div.innerHTML += c;
+            term.scrollTop = term.scrollHeight;
+            await new Promise(r => setTimeout(r, 10));
         }
-      }
     }
 
-    if(y < 0 || y > canvas.height) return true;
-
-    return false;
-  }
-
-  function draw(){
-    if(gameOver) return;
-
-    ctx.clearRect(0,0,canvas.width,canvas.height);
-
-    velocity += gravity;
-    velocity *= 0.98; // сглаживание движения
-    y += velocity;
-
-    if(frame % 140 === 0){
-      createObstacle();
+    async function updateIntegrity(loss) {
+        integrity -= loss;
+        integrityEl.innerText = integrity + "%";
+        if (integrity < 40) integrityEl.style.color = "red";
+        await print(`!! WARNING: SYSTEM INTEGRITY AT ${integrity}% !!`, "danger");
     }
 
-    drawObstacles();
-    drawPlane();
-
-    if(checkCollision()){
-      gameOver = true;
-
-      ctx.fillStyle = "#333";
-      ctx.font = "16px sans-serif";
-      ctx.fillText("почти 😏", 120, 100);
-
-      setTimeout(()=>{
-        startGame();
-      }, 1200);
-
-      return;
+    async function init() {
+        await print(">>> LOADING WB_NULL_EXPLOIT v.2.0...", "sys");
+        await print(">>> SCANNING FOR VULNERABILITIES... FOUND.", "sys");
+        await print(">>> ТЕРМИНАЛ: 'Обнаружена база данных подарков. Чтобы войти, подтвердите сектор обслуживания.'");
+        await print(">>> 'Введите пункт назначения последнего перелета:'");
+        stage = "geo";
     }
 
-    if(frame > 1000){
-      next(4);
-      return;
+    async function handle(e) {
+        if(e.key !== 'Enter') return;
+        const val = input.value.toLowerCase().trim();
+        input.value = '';
+        if(!val && stage !== "breach") return;
+
+        await print(`admin@wb:~$ ${val}`, "success");
+
+        if(stage === "geo") {
+            if(val.includes("тай")) {
+                stage = "sky_level";
+                await print(">>> Локация верна. Уровень доступа: СТЮАРДЕССА. Требуется подтверждение квалификации.");
+                await print(skyQuiz[0].q);
+            } else { await updateIntegrity(20); }
+        }
+
+        else if(stage === "sky_level") {
+            const current = skyQuiz[subStep];
+            if(current.keys.some(k => val.includes(k))) {
+                subStep++;
+                if(subStep < skyQuiz.length) {
+                    await print(">>> Ответ принят. Переход к следующему протоколу...");
+                    await print(skyQuiz[subStep].q);
+                } else {
+                    stage = "breach_init";
+                    await print(">>> Квалификация подтверждена. Начинаю взлом Firewall WB...");
+                    await print(">>> Введите 'START BREACH' для запуска дешифратора.");
+                }
+            } else { await updateIntegrity(15); await print("!! НЕВЕРНЫЙ ПРОТОКОЛ. Повторите:", "danger"); }
+        }
+
+        else if(stage === "breach_init") {
+            if(val === "start breach") {
+                stage = "breach";
+                widget.style.display = 'block';
+                let p = 0;
+                const int = setInterval(async () => {
+                    p += Math.random() * 8;
+                    progressBar.style.width = Math.min(p, 100) + "%";
+                    if(p >= 100) {
+                        clearInterval(int);
+                        stage = "final_word";
+                        await print(">>> FIREWALL BYPASSED. MASTER KEY REQUIRED.");
+                        await print(">>> Введите финальное слово (вы оба делали вид что это норм, но ловили с этого кринж):");
+                    }
+                }, 400);
+                await print(">>> ВЗЛОМ В ПРОЦЕССЕ... НЕ РАЗРЫВАЙТЕ СОЕДИНЕНИЕ...", "sys");
+            }
+        }
+
+        else if(stage === "final_word") {
+            if(val.match(/абаюнда|обоюдно|абаюдна/)) {
+                await print(">>> ДОСТУП РАЗРЕШЕН. ГЕНЕРАЦИЯ СЕРТИФИКАТА...", "success");
+                setTimeout(() => {
+                    document.getElementById('wrapper').style.display = 'none';
+                    document.getElementById('final').style.display = 'flex';
+                }, 2000);
+            } else { await updateIntegrity(30); }
+        }
     }
 
-    frame++;
-    requestAnimationFrame(draw);
-  }
+    // Матрица
+    const canvas = document.getElementById('matrix');
+    const ctx = canvas.getContext('2d');
+    canvas.width = window.innerWidth; canvas.height = window.innerHeight;
+    const drops = Array(Math.floor(canvas.width/15)).fill(1);
+    function draw() {
+        ctx.fillStyle = "rgba(0, 8, 0, 0.15)"; ctx.fillRect(0,0,canvas.width,canvas.height);
+        ctx.fillStyle = "#00ff9c"; ctx.font = "14px monospace";
+        drops.forEach((y, i) => {
+            const text = String.fromCharCode(Math.random() * 128);
+            ctx.fillText(text, i*15, y*15);
+            if(y*15 > canvas.height && Math.random() > 0.98) drops[i] = 0;
+            drops[i]++;
+        });
+    }
+    setInterval(draw, 50);
 
-  draw();
-}
+    // Таймер
+    let time = 420;
+    setInterval(() => {
+        time--;
+        let m = Math.floor(time/60);
+        let s = time%60;
+        document.getElementById('timer').innerText = `${m}:${s < 10 ? '0' : ''}${s}`;
+    }, 1000);
 
-// этап 4
-function check4(){
-  let val = document.getElementById('cipher').value
-    .toLowerCase()
-    .trim();
+    input.addEventListener('keydown', handle);
+    function copyCode() {
+        navigator.clipboard.writeText("8D6D-PC62-TW8E-2Z43");
+        alert("Код успешно скопирован! Удачных покупок на WB ❤️");
+    }
 
-  if(val === 'абаюнда'){
-    next('final');
-  } else {
-    alert('ммм... нет 😏');
-  }
-}
+    init();
 </script>
-
 </body>
 </html>
